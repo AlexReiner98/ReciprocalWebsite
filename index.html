@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-1MPRK5XHGE"></script>
@@ -10,20 +11,37 @@
     gtag('config', 'G-1MPRK5XHGE');
     </script>
 
+    <!-- Meta -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=defice-width, initial-scale=1.0">
-    <title>Re.ciprocal Website</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reciprocal</title>
+
+    <!-- Link to External CSS -->
+    <link rel="stylesheet" href="styles.css">
+
 </head>
 
+
+
 <body>
-    <h1>Welcome to Reciprocal Studio</h1>
+    <h1>Reciprocal Studio</h1>
     <p>Sign up for updates below:</p>
-    <form action="https://formspree.io/f/mqapzwgn" method="POST">
+
+    <!-- Signup Form -->
+    <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
         <input type="email" name="email" placeholder="Enter your email" required>
         <button type="submit">Sign Up</button>
     </form>
+    
+    <!-- Image Carousel -->
+    <div class="carousel">
+        <div class="carousel-images">
+            <img src="images/render1.jpg" alt="Image 1">
+            <img src="images/render3.jpg" alt="Image 2">
+        </div>
+        <button type="button" class="prev">&#10094;</button>
+        <button type="button" class="next">&#10095;</button>
+    </div>
+<script src="script.js"></script>
 </body>
-
-<img src = "Images/20250307 - Headphone Stand Render 2.jpg" alt = "Reciprocal headphone stand" width = "500">
-
 </html>

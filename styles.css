@@ -1,7 +1,112 @@
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 20px auto;
+/* Center everything on the page */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;                /* Enables flexbox */
+    flex-direction: column;       /* Stack elements vertically */
+    justify-content: center;      /* Center items vertically */
+    align-items: center;          /* Center items horizontally */
+    height: 100vh;                /* Full viewport height */
+    width: 100vw;
+
+    margin: 0;
+    text-align: center;
+}
+
+h1,p {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+}
+
+/* Force the carousel itself to center */
+.carousel {
+    position: relative;
+    width: 80%;
+    max-width: 500px;
+    overflow: hidden;
     border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+
+    /* Ensuring it's properly centered */
+    display: flex;
+}
+
+/* Ensure images are centered inside the carousel */
+.carousel-images {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+/* Fix image positioning */
+.carousel img {
+    width: 200%;
+    height: auto;
+
+    object-fit: cover;
+    position: relative;
+    left: -50%;
+
+}
+
+
+/* Carousel Navigation Buttons */
+.carousel button {
+    position: absolute;
+    top: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    padding-left: 16px;
+    padding-right: 16px;
+
+    font-size: 18px;
+    border-radius: 50%;
+}
+
+.carousel .prev { left: 10px; }
+.carousel .next { right: 10px; }
+
+.carousel button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Style the form */
+form {
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center; /* Ensures input and button are centered */
+    margin: 20px;
+}
+
+/* Style the email input */
+input[type="email"] {
+    padding: 10px;
+    width: 90%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+/* Style the button */
+form button {
+    padding: 10px;
+    width: 80%;
+    border: none;
+    background: #007BFF;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+form button:hover {
+    background: #0056b3;
 }

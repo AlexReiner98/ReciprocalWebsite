@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function nextImage() {
         index = (index + 1) % totalImages;
         updateCarousel();
-        resetAutoSlide(); // Reset auto-slide timer when manually changing images
+        resetAutoSlide(); 
     }
 
     function prevImage() {
@@ -30,18 +30,16 @@ document.addEventListener("DOMContentLoaded", function() {
     function startAutoSlide() {
         autoSlideInterval = setInterval(() => {
             nextImage();
-        }, 3000); // Change images every 3 seconds
+        }, 3000); 
     }
 
     function resetAutoSlide() {
-        clearInterval(autoSlideInterval); // Stop current timer
-        startAutoSlide(); // Restart timer
+        clearInterval(autoSlideInterval); 
+        startAutoSlide(); 
     }
 
-    // Button event listeners
     nextBtn.addEventListener("click", nextImage);
     prevBtn.addEventListener("click", prevImage);
 
-    // Start automatic sliding
     startAutoSlide();
 });

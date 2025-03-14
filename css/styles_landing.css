@@ -110,3 +110,18 @@ form button {
 form button:hover {
     background: #0056b3;
 }
+
+.gallery-button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.gallery-button:hover {
+    background-color: #0056b3;
+}

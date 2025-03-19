@@ -4,15 +4,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const images = document.querySelectorAll(".carousel img");
     const prevBtn = document.querySelector(".prev");
     const nextBtn = document.querySelector(".next");
-    const theCarousel = document.querySelector(".carousel");
-    const image = document.querySelector("img");
 
     let index = 0;
     const totalImages = images.length;
+    const testImage = images[0];
     let autoSlideInterval;
 
     function updateCarousel() {
-        imagesContainer.style.transform = `translateX(-${index * (image.offsetWidth / theCarousel.offsetWidth)*100}%)`;
+        imagesContainer.style.transform = `translateX(-${index * (testImage.offsetWidth / imagesContainer.offsetWidth)*100}%)`;
     }
 
     function nextImage() {

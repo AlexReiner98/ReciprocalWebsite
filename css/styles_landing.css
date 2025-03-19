@@ -1,117 +1,11 @@
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    display: flex;   
-    flex-direction: column;  
-    justify-content: center;  
-    align-items: center; 
-    height: 100vh; 
-    width: 100vw;
-
+    font-family: Arial, sans-serif; 
     margin: 0;
-    text-align: center;
 }
 
-main{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.carousel {
-    position: relative;
-    width: 80%;
-    max-width: 800px;
-    overflow: hidden;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    margin-bottom: 20px;
-    display: flex;
-}
-
-.carousel-images {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-}
-
-.carousel img {
-    right: 25%;
-    width: 150%;
-    height: auto;
-
-    object-fit: cover;
-    position: relative;
-    
-}
-.carousel button {
-    position: absolute;
-    top: 50%;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    padding: 10px;
-    padding-left: 16px;
-    padding-right: 16px;
-
-    font-size: 18px;
-    border-radius: 50%;
-}
-
-.carousel .prev { left: 10px; }
-.carousel .next { right: 10px; }
-
-.carousel button:hover {
-    background-color: rgba(0, 0, 0, 0.8);
-}
-
-/* Style the form */
-form {
-    background: white;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-    width: 80%;
-    max-width: 800px;
-    
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* Style the email input */
-input[type="email"] {
-    padding: 10px;
-    margin: 10px;
-    width: 90%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-
-}
-
-/* Style the button */
-form button {
-    padding: 10px;
-    margin: 10px;
-    width: 90%;
-    border: none;
-    border-radius: 5px;
-    background: #007BFF;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-
-}
-
-form button:hover {
-    background: #0056b3;
+h1 {
+    size: 40pt;
 }
 
 /* Header Styling */
@@ -127,24 +21,31 @@ header {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+
 .container {
-    max-width: 1200px;
+    width: 80%;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
+
     align-items: center;
     padding: 0 20px;
 }
 
-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+.title {
     display: flex;
+    flex-direction: column; /* Stacks h1 and p vertically */
+    align-items: flex-start; /* Aligns text to the left */
+}
+.title h1, .title p {
+    margin: 5px; /* Removes unnecessary spacing */
+    padding: 0; /* Ensures no extra padding */
+    line-height: 1.2; /* Adjusts text spacing */
 }
 
-nav ul li {
-    margin-left: 20px;
+nav ul {
+    list-style: none;
+    display: flex;
 }
 
 nav ul li a {
@@ -159,3 +60,188 @@ nav ul li a {
 nav ul li a:hover {
     background: rgba(255, 255, 255, 0.2);
 }
+
+.hero {
+    height: 100vh;
+    width: 100%; 
+    background-image: url('../Images/render1.jpg'); /* Ensure correct path */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+
+/* Overlay for better text visibility */
+.hero-overlay {
+    border-radius: 8px;
+    width:80%;
+    display:flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Wrapper to center text container on the left */
+.text-wrapper {
+    width: 800px; /* Left half of the screen */
+    margin: 0 auto;
+    display: flex;
+    justify-content: center; /* Centers the text container inside */
+    align-items:center;
+}
+
+/* Title */
+.hero-overlay h2 {
+    font-size: 42px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Subtitle */
+.hero-overlay p {
+    font-size: 20px;
+    max-width: 600px;
+    margin: 0px;
+    margin-top: 10px;
+    text-align: left;
+}
+
+/* Content Sections */
+.content.right {
+    display: flex;
+    align-items: center; /* Centers content vertically */
+    justify-content:space-between;
+    height: 75vh; /* three quarters the screen height */
+    background-color: white; /* Ensures white background */
+}
+
+
+img {
+    width: 50%; /* Image takes up the right half */
+    height: 100%; /* Stretches to fill the height */
+    object-fit: cover; /* Ensures the image fits well */
+    margin: 20px;
+    border-radius: 20px;
+}
+
+.content h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.carousel {
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    object-fit: cover;
+    position:relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-images {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel img {
+    right: 25%;
+    width: 150%;
+    height: 100%;
+    object-fit: cover;
+    margin:0px;
+    border-radius: 0px;
+    position: relative;
+}
+
+
+.carousel button {
+    position: relative;
+    margin: 0 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    padding-left: 16px;
+    padding-right: 16px;
+
+    font-size: 18px;
+    border-radius: 50%;
+    z-index: 10;
+}
+
+.carousel .prev { left: 10px; }
+.carousel .next { right: 10px; }
+
+.carousel button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Style the form */
+form {
+    background: #444; /* Slightly lighter than #333 for contrast */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Softer shadow */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 80%;
+    max-width: 800px;
+}
+
+/* Style the email input */
+input[type="email"] {
+    padding: 12px;
+    margin: 10px;
+    width: 90%;
+    border: 1px solid #666; /* Softer contrast */
+    border-radius: 5px;
+    background-color: #555; /* Darker gray input for subtle contrast */
+    color: #ddd; /* Light gray text for readability */
+    font-size: 1rem;
+    cursor: text;
+}
+
+/* Style the button */
+form button {
+    padding: 12px;
+    margin: 10px;
+    width: 90%;
+    border: none;
+    border-radius: 5px;
+    background: #287d46; /* Muted green for elegance */
+    color: #f1f1f1; /* Soft off-white for readability */
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+form button:hover {
+    background: #216636; /* Slightly darker on hover */
+}
+
+
+.join-us{
+    width: 50%; /* Ensures it takes up half the section */
+    text-align:center; /* Ensures text inside stays centered */
+    position: relative; /* Needed for better control */
+}
+
+.contact {
+    display: flex;
+    color: white;
+    align-items: flex-start;
+    justify-content: space-between;
+    min-height: 25vh;
+    width: 100%;
+    background-color: #333;
+}
+

@@ -3,6 +3,7 @@
     <head>
         <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-1MPRK5XHGE"></script>
+
         <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
@@ -18,35 +19,115 @@
         <!-- Link to External CSS -->
         <link rel="stylesheet" href="css/styles_landing.css">
     </head>
+
     <body>
         <header>
             <div class="container">
-                <h1>Reciprocal Studio</h1>
+                <div class="title">
+                    <h1>Reciproca.</h1>
+                    <p>Reframing Digital Fabrication</p>
+                </div>
                 <nav>
                     <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="https://www.youtube.com/@reciproca" target="_blank" class="youtube-button">YouTube</a></li>
+                        <li><a href="https://www.linkedin.com/in/alex-reiner-b85b29178/" target="_blank" class="linkedin-button">Linkedin</a></li>
                     </ul>
                 </nav>
             </div>
         </header>
-        <main>
-            <!-- Signup Form -->
-            <form action="https://formspree.io/f/mqapzwgn" method="POST">
-                <input type="email" name="email" placeholder="Enter your email" required>
-                <button type="submit">Sign Up</button>
-            </form>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <video autoplay loop muted playsinline id="bg-video">
+                <source src="Images/background.mp4" type="video/mp4">
+            </video>
+            <div class="text-wrapper">
+                <div class="hero-overlay">
+                    <h2>Reciproca:</h2>
+                    <p>A sustainable rapid-prototyping platform for frame structures.</p>
+                    <p>From design intent to a kit of parts ready for assembly in minutes.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content Sections -->
+        <section class="content bright">
+            <div class="text-wrapper">
+                <div class="hero-overlay">
+                    <h2>Endless Possibilities:</h2>
+                    <p>From design intent, to an assembled prototype in minutes, not hours.</p>
+                </div>
+            </div>
+
             <!-- Image Carousel -->
             <div class="carousel">
+                <button type="button" class="prev">&#10094;</button>
                 <div class="carousel-images">
                     <img src="images/render1.jpg" alt="Image 1">
                     <img src="images/render2.jpg" alt="Image 2">
                     <img src="images/render3.jpg" alt="Image 3">
                 </div>
-                <button type="button" class="prev">&#10094;</button>
                 <button type="button" class="next">&#10095;</button>
             </div>
-        </main>
+        </section>
+
+        <section class="content dark">
+            <img src="images/render1.jpg" alt="Image 1">
+            <div class="text-wrapper">
+                <div class="hero-overlay">
+                    <h2>Design:</h2>
+                    <p>Out method uses a proprietary geometric solver to turn almost any network of lines, into a fabricable reciprocal frame.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content bright">
+            <div class="text-wrapper">
+                <div class="hero-overlay">
+                    <h2>Fabrication</h2>
+                    <p>Once the design is finalized, an in-house fabrication processes turns stock building elements into a kit of parts thats ready for assembly.</p>
+                </div>
+            </div>
+            <img src="images/render1.jpg" alt="Image 1">
+        </section>
+
+        <section class="content dark">
+            <img src="images/render1.jpg" alt="Image 1">
+            <div class="text-wrapper">
+                <div class="hero-overlay">
+                    <h2>Assembly</h2>
+                    <p>Once the pieces are made, the frame is assembled in minutes, using a unique set of automatically generated assembly instruction.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact">
+            <div class="join-us">
+                <div class="text-wrapper">
+                    <div class="hero-overlay">
+                        <h2>Join Us</h2>
+                        <p>Enter your email to be the first to get content updates and early adopter product offers.</p>
+                    </div>
+                </div>
+                <!-- Signup Form -->
+                <form action="https://formspree.io/f/mqapzwgn" method="POST">
+                    <input type="email" name="email" placeholder="Enter your email" required>
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
+            <div class="join-us">
+                <div class="text-wrapper">
+                    <div class="hero-overlay">
+                        <h2>Contact</h2>
+                        <p>Youtube: www.youtube.com/reciproca</p>
+                        <p>Linkedin: www.linkedin.com/reciproca</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <script src="script.js"></script>
+
     </body>
 </html>

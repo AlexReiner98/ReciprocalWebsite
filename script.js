@@ -1,3 +1,10 @@
+window.addEventListener("load", function () {
+    const loader = document.getElementById("loader-overlay");
+    loader.style.opacity = '0';
+    loader.style.transition = 'opacity 0.5s ease';
+    setTimeout(() => loader.remove(), 500);
+});
+
 document.addEventListener("DOMContentLoaded", function() {
     // Select elements
     const imagesContainer = document.querySelector(".carousel-images");
@@ -41,4 +48,22 @@ document.addEventListener("DOMContentLoaded", function() {
     prevBtn.addEventListener("click", prevImage);
 
     startAutoSlide();
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const video = document.getElementById("design-video");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        });
+    }, {
+        threshold: 0.5 // 50% of video must be visible
+    });
+
+    observer.observe(video);
 });

@@ -21,17 +21,22 @@
     </head>
 
     <body>
+        <div id="loader-overlay">
+            <div class="spinner"></div>
+        </div>
+
         <header>
             <div class="container">
-                <div class="title">
-                    <h1>Reciproca.</h1>
-                    <p>Reframing Digital Fabrication</p>
+                <div class="logo-title">
+                    <img src="Images/Reciproca Label Transparent.png" alt="Reciproca_Logo">
+                    <div class="title">
+                        <h1>Reciproca</h1>
+                        <p>Reframing Digital Fabrication</p>
+                    </div>
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="contact.html">Contact</a></li>
-                        <li><a href="https://www.youtube.com/@reciproca" target="_blank" class="youtube-button">YouTube</a></li>
-                        <li><a href="https://www.linkedin.com/in/alex-reiner-b85b29178/" target="_blank" class="linkedin-button">Linkedin</a></li>
+                        <li><a href="#contact">Contact</a></li>
                     </ul>
                 </nav>
             </div>
@@ -44,9 +49,8 @@
             </video>
             <div class="text-wrapper">
                 <div class="hero-overlay">
-                    <h2>Reciproca:</h2>
-                    <p>A sustainable rapid-prototyping platform for frame structures.</p>
-                    <p>From design intent to a kit of parts ready for assembly in minutes.</p>
+                    <h2>Reciproca</h2>
+                    <p>Rapid-prototyping for frame structures: design to assembly in minutes.</p>
                 </div>
             </div>
         </section>
@@ -55,8 +59,9 @@
         <section class="content bright">
             <div class="text-wrapper">
                 <div class="hero-overlay">
-                    <h2>Endless Possibilities:</h2>
-                    <p>From design intent, to an assembled prototype in minutes, not hours.</p>
+                    <h2>Nearly Endless Possibilities:</h2>
+                    <p>Reciprocal frames can be assembled from a kit of parts that isn't bound by preset connection angles. We are just beginning to explore the limits of this new design space.
+                    </p>
                 </div>
             </div>
 
@@ -73,11 +78,13 @@
         </section>
 
         <section class="content dark">
-            <img src="images/render1.jpg" alt="Image 1">
+            <video autoplay loop muted playsinline id="design-video">
+                <source src="Images/20250325 - Design Process.mp4" type="video/mp4">
+            </video>
             <div class="text-wrapper">
                 <div class="hero-overlay">
-                    <h2>Design:</h2>
-                    <p>Out method uses a proprietary geometric solver to turn almost any network of lines, into a fabricable reciprocal frame.</p>
+                    <h2>Intuitive Design Tools</h2>
+                    <p>Our reciprocal solver takes care of the heavy lifting in the background, making it easy to learn and quick to iterate.</p>
                 </div>
             </div>
         </section>
@@ -85,15 +92,19 @@
         <section class="content bright">
             <div class="text-wrapper">
                 <div class="hero-overlay">
-                    <h2>Fabrication</h2>
-                    <p>Once the design is finalized, an in-house fabrication processes turns stock building elements into a kit of parts thats ready for assembly.</p>
+                    <h2>Integrated Fabrication Process</h2>
+                    <p>Our fabrication process turns stock linear elements into a kit of parts ready for assembly. Because of our unique roller design, stock lengths are not limited to machine size.</p>
                 </div>
             </div>
-            <img src="images/render1.jpg" alt="Image 1">
+            <video autoplay loop muted playsinline id="fabrication-video">
+                <source src="Images/Machine Explosion.mp4" type="video/mp4">
+            </video>
         </section>
 
         <section class="content dark">
-            <img src="images/render1.jpg" alt="Image 1">
+            <video autoplay loop muted playsinline id="assembly-video">
+                <source src="Images/Assembly Animation full.mp4" type="video/mp4">
+            </video>
             <div class="text-wrapper">
                 <div class="hero-overlay">
                     <h2>Assembly</h2>
@@ -102,7 +113,7 @@
             </div>
         </section>
 
-        <section class="contact">
+        <section id="contact" class="contact">
             <div class="join-us">
                 <div class="text-wrapper">
                     <div class="hero-overlay">
@@ -120,8 +131,11 @@
                 <div class="text-wrapper">
                     <div class="hero-overlay">
                         <h2>Contact</h2>
-                        <p>Youtube: www.youtube.com/reciproca</p>
-                        <p>Linkedin: www.linkedin.com/reciproca</p>
+                        <p>Email: alex@recipro.ca</p>
+                        <p>
+                            <a href="https://www.youtube.com/@reciproca" target="_blank" rel="noopener">YouTube</a> |
+                            <a href="https://www.linkedin.com/in/alex-reiner-b85b29178/" target="_blank" rel="noopener">Linkedin</a>
+                        </p>
                     </div>
                 </div>
             </div>

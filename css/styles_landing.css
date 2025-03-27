@@ -1,7 +1,37 @@
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: Arial, sans-serif; 
     margin: 0;
+}
+
+#loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #ccc;
+    border-top: 4px solid black;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 h1 {
@@ -13,7 +43,6 @@ header {
     width: 100%;
     background-color: #333;
     color: white;
-    padding: 15px 0;
     position: fixed; /* Keeps the header fixed at the top */
     top: 0;
     left: 0;
@@ -29,13 +58,28 @@ header {
     justify-content: space-between;
 
     align-items: center;
-    padding: 0 20px;
+}
+
+.logo-title img{
+    height: 75px;
+    width: auto;
+    margin: 0;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 0;
+}
+
+.logo-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .title {
     display: flex;
     flex-direction: column; /* Stacks h1 and p vertically */
     align-items: flex-start; /* Aligns text to the left */
+    margin: 20px;
 }
 .title h1, .title p {
     margin: 5px; /* Removes unnecessary spacing */
@@ -48,7 +92,7 @@ nav ul {
     display: flex;
 }
 
-nav ul li a {
+a {
     color: white;
     text-decoration: none;
     font-size: 18px;
@@ -57,7 +101,7 @@ nav ul li a {
     transition: background 0.3s;
 }
 
-nav ul li a:hover {
+a:hover {
     background: rgba(255, 255, 255, 0.2);
 }
 
@@ -82,9 +126,40 @@ nav ul li a:hover {
     pointer-events: none;
   }
 
+.content.dark video {
+    width: 66%; /* Image takes up the right half */
+    height: 90%; /* Stretches to fill the height */
+    object-fit: cover; /* Ensures the image fits well */
+    margin: 40px;
+    border-radius: 20px;
+}
+.content.bright video {
+    width: 66%; /* Image takes up the right half */
+    height: 90%; /* Stretches to fill the height */
+    object-fit: cover; /* Ensures the image fits well */
+    margin: 40px;
+    border-radius: 20px;
+}
+
+#fabrication-video {
+    width:50%;
+}
+
+#assembly-video {
+    width:50%;
+}
+
+
+img {
+    width: 48.8%; /* Image takes up the right half */
+    height: 80%; /* Stretches to fill the height */
+    object-fit: cover; /* Ensures the image fits well */
+    margin: 20px;
+    border-radius: 20px;
+}
+
 /* Overlay for better text visibility */
 .hero-overlay {
-    border-radius: 8px;
     width:80%;
     display:flex;
     flex-direction: column;
@@ -94,7 +169,7 @@ nav ul li a:hover {
 /* Wrapper to center text container on the left */
 .text-wrapper {
     width: 800px; /* Left half of the screen */
-    margin: 0 auto;
+    margin: 0;
     display: flex;
     justify-content: center; /* Centers the text container inside */
     align-items:center;
@@ -105,12 +180,13 @@ nav ul li a:hover {
     font-size: 42px;
     font-weight: bold;
     margin-bottom: 10px;
+    text-align: center;
 }
 
 /* Subtitle */
 .hero-overlay p {
     font-size: 20px;
-    max-width: 600px;
+    max-width: 800px;
     margin: 0px;
     margin-top: 10px;
     text-align: left;
@@ -121,7 +197,7 @@ nav ul li a:hover {
     display: flex;
     align-items: center; /* Centers content vertically */
     justify-content:space-between;
-    height: 75vh; /* three quarters the screen height */
+    height: 80vh; /* three quarters the screen height */
     background-color: white; /* Ensures white background */
 }
 
@@ -130,19 +206,12 @@ nav ul li a:hover {
     display: flex;
     align-items: center; /* Centers content vertically */
     justify-content:space-between;
-    height: 75vh; /* three quarters the screen height */
+    height: 80vh; /* three quarters the screen height */
     background-color: rgb(233, 233, 233); /* Ensures white background */
 }
 
 
 
-img {
-    width: 48.8%; /* Image takes up the right half */
-    height: 95%; /* Stretches to fill the height */
-    object-fit: cover; /* Ensures the image fits well */
-    margin: 20px;
-    border-radius: 20px;
-}
 
 .content h2 {
     font-size: 28px;

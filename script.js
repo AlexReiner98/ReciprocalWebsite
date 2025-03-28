@@ -1,9 +1,19 @@
-window.addEventListener("load", function () {
-    const loader = document.getElementById("loader-overlay");
-    loader.style.opacity = '0';
-    loader.style.transition = 'opacity 0.5s ease';
-    setTimeout(() => loader.remove(), 500);
-});
+
+window.addEventListener('load', function () {
+    const loader = document.getElementById('loading-screen');
+    loader.classList.add('hidden');
+    setTimeout(() => loader.style.display = 'none', 300); // match the transition duration
+    document.getElementById('site-content').style.display = 'block';
+  });
+
+const spinner = lottie.loadAnimation({
+    container: document.getElementById('lottie-spinner'),
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    path: 'Images/logo-animation-white.json' // relative to your site root
+  });
+
 
 document.addEventListener("DOMContentLoaded", function() {
     // Select elements

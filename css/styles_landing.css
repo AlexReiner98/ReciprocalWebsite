@@ -19,7 +19,7 @@ body {
     align-items: center;
     background: #fff; /* optional: match your site or use transparent */
     z-index: 1000;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.5s ease;
     opacity: 1;
   }
 

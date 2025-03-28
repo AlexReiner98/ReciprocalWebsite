@@ -1,18 +1,34 @@
 
-window.addEventListener('load', function () {
+let pageLoaded = false;
+let animationLooped = false;
+
+function tryRevealSite() {
+  if (pageLoaded && animationLooped) {
     const loader = document.getElementById('loading-screen');
     loader.classList.add('hidden');
-    setTimeout(() => loader.style.display = 'none', 300); // match the transition duration
+    setTimeout(() => loader.style.display = 'none', 1000);
     document.getElementById('site-content').style.display = 'block';
-  });
+  }
+}
 
+// Lottie animation setup
 const spinner = lottie.loadAnimation({
-    container: document.getElementById('lottie-spinner'),
-    renderer: 'svg',
-    loop: true,
-    autoplay: true,
-    path: 'Images/logo-animation-white.json' // relative to your site root
-  });
+  container: document.getElementById('lottie-spinner'),
+  renderer: 'svg',
+  loop: true,
+  autoplay: true,
+  path: 'Images/logo-animation-white.json'
+});
+
+spinner.addEventListener('loopComplete', () => {
+  animationLooped = true;
+  tryRevealSite();
+});
+
+window.addEventListener('load', () => {
+  pageLoaded = true;
+  tryRevealSite();
+});
 
 
 document.addEventListener("DOMContentLoaded", function() {

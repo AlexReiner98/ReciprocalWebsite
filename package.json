@@ -1,0 +1,26 @@
+{
+  "name": "reciprocalwebsite",
+  "version": "1.0.0",
+  "main": "3d.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexReiner98/ReciprocalWebsite.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexReiner98/ReciprocalWebsite/issues"
+  },
+  "homepage": "https://github.com/AlexReiner98/ReciprocalWebsite#readme",
+  "description": "",
+  "dependencies": {
+    "three": "^0.175.0",
+    "vite": "^6.2.5"
+  }
+}

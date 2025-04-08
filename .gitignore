@@ -1,0 +1,28 @@
+# Node.js dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# VS Code settings
+.vscode/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment files (optional)
+.env
+.env.local
+
+# Netlify (if used)
+.netlify/
+
+# Parcel/Vite/Webpack cache (if used)
+.cache/

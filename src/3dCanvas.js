@@ -9,6 +9,7 @@ import {
     handleClickSelection,
     handleBoxSelection,
     deleteSelected,
+    registerAddedObjects,
     undo,
     redo
   } from './selection.js';
@@ -146,6 +147,7 @@ renderer.domElement.addEventListener('pointerup', (e) => {
             const savePoint = rg.createSavedPoint(snapLocation,0.5, 0xff2d00);
             points.push(savePoint);
             scene.add(savePoint);
+            registerAddedObjects([savePoint]);
         }
         if (currentMode === 'select') {
             const append = e.shiftKey;

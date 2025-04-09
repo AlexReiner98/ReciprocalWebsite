@@ -1,6 +1,13 @@
-// vite.config.js
 import { defineConfig } from 'vite'
+import { resolve } from 'path'
 
 export default defineConfig({
-  base: './', // adjust if deploying under a subpath
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        canvas: resolve(__dirname, '3dCanvas.html'),
+      },
+    },
+  },
 })

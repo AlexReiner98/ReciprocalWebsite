@@ -7,7 +7,10 @@ import { setupCameraControls  } from "./cameraControls.js";
 import { setupControlPanel } from './controlPanel.js';
 import {
     handleClickSelection,
-    handleBoxSelection
+    handleBoxSelection,
+    deleteSelected,
+    undo,
+    redo
   } from './selection.js';
 import * as rg from './rhinoGeometries.js';
 
@@ -149,8 +152,22 @@ renderer.domElement.addEventListener('pointerup', (e) => {
             handleClickSelection(e, camera, renderer, scene, append);
         }
     }
-    isDragging = false; // ✅ Reset flag
+    isDragging = false;
 });
+
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Delete') {
+      deleteSelected(scene);
+    }
+  
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+      undo(scene);
+    }
+  
+    if ((e.ctrlKey || e.metaKey) && e.key === 'y') {
+      redo(scene);
+    }
+  });
 
 
 ////////////////////////////////////////////////////////

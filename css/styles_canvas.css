@@ -2,6 +2,12 @@
     margin: 0;
 }
 
+body {
+  margin: 0;
+  overflow: hidden;
+  position: relative; /* Needed for absolute children */
+}
+
 #control-panel {
     position: absolute;
     top: 10px;
@@ -27,4 +33,13 @@
   #control-panel button.active {
     border: 3px solid #000;
     background: #eee;
+  }
+
+  #selection-rect {
+    position: absolute;
+    border: 1px dashed #888;
+    background: rgba(200, 200, 255, 0.2);
+    pointer-events: none;
+    display: none;
+    z-index: 1000; /* Ensure it's above the canvas */
   }

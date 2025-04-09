@@ -45,8 +45,16 @@ export function updateSnapPoint(point, vector, scene) {
   scene.add(point);
 }
 
-export function createSavedPoint(location, radius, colour){
-  const point = createSnapPoint(radius, colour);
+export function createSavedPoint(location, radius, color, data = {}) {
+  const point = createSnapPoint(radius, color);
   point.position.copy(location);
+
+  // Attach original data
+  point.userData = {
+    type: 'point',
+    original: data, // your source data
+    id: data.id || crypto.randomUUID(), // optional unique ID
+  };
+
   return point;
 }

@@ -7,7 +7,11 @@ import { setupCameraControls  } from "./cameraControls.js";
 import { setupControlPanel } from './controlPanel.js';
 import {
     handleClickSelection,
-    handleBoxSelection
+    handleBoxSelection,
+    deleteSelected,
+    registerAddedObjects,
+    undo,
+    redo
   } from './selection.js';
 import * as rg from './rhinoGeometries.js';
 
@@ -143,14 +147,29 @@ renderer.domElement.addEventListener('pointerup', (e) => {
             const savePoint = rg.createSavedPoint(snapLocation,0.5, 0xff2d00);
             points.push(savePoint);
             scene.add(savePoint);
+            registerAddedObjects([savePoint]);
         }
         if (currentMode === 'select') {
             const append = e.shiftKey;
             handleClickSelection(e, camera, renderer, scene, append);
         }
     }
-    isDragging = false; // ✅ Reset flag
+    isDragging = false;
 });
+
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Delete') {
+      deleteSelected(scene);
+    }
+  
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+      undo(scene);
+    }
+  
+    if ((e.ctrlKey || e.metaKey) && e.key === 'y') {
+      redo(scene);
+    }
+  });
 
 
 ////////////////////////////////////////////////////////

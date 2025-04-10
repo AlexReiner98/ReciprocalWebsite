@@ -48,10 +48,12 @@ export function deleteSelected(scene) {
   clearSelection();
 }
 
+
 export function registerAddedObjects(objects) {
   undoStack.push({ type: 'add', objects });
   redoStack.length = 0; // Clear redo on new action
 }
+
 
 export function undo(scene) {
   const action = undoStack.pop();
@@ -61,6 +63,7 @@ export function undo(scene) {
     case 'delete':
       action.objects.forEach(obj => scene.add(obj));
       break;
+
     case 'add':
       action.objects.forEach(obj => {
         scene.remove(obj);
@@ -80,6 +83,7 @@ export function redo(scene) {
     case 'delete':
       action.objects.forEach(obj => scene.remove(obj));
       break;
+
     case 'add':
       action.objects.forEach(obj => scene.add(obj));
       break;

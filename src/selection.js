@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
 let selectedObjects = new Set();
 let selectionColor = new THREE.Color(0xffff00);
@@ -15,7 +15,7 @@ export function clearSelection() {
 }
 
 export function selectObject(obj) {
-  if (!obj || selectedObjects.has(obj)) return;
+  if (!obj || typeof obj !== 'object' || !obj.isObject3D || selectedObjects.has(obj)) return;
 
   obj.userData.originalMaterial = {
     color: obj.material.color.clone()
@@ -107,7 +107,9 @@ export function handleClickSelection(event, camera, renderer, scene, append = fa
   }
 }
 
-export function handleBoxSelection(start, end, camera, scene, append = false) {
+export function handleBoxSelection(start, end, camera, scene, append = false, isGumballDragging) {
+  console.log("Gumball dragging: " + isGumballDragging); 
+  if(isGumballDragging) return;
   if (!append) clearSelection();
 
   const rect = new THREE.Box2(start.clone(), end.clone());

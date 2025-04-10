@@ -1,5 +1,5 @@
 // src/grid.js
-import * as THREE from 'three';
+import * as THREE from "three";
 
 export function createGridAndPlane(scene) {
   // Grid helper

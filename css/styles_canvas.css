@@ -43,3 +43,5 @@ body {
     display: none;
     z-index: 1000; /* Ensure it's above the canvas */
   }
+
+  

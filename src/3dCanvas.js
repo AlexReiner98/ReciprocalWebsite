@@ -5,15 +5,26 @@
 import * as THREE from "three";
 import { setupCameraControls  } from "./cameraControls.js";
 import { setupControlPanel } from './controlPanel.js';
+import * as rg from './rhinoGeometries.js';
+
 import {
     handleClickSelection,
     handleBoxSelection,
     deleteSelected,
     registerAddedObjects,
     undo,
-    redo
+    redo,
+    getSelection
   } from './selection.js';
-import * as rg from './rhinoGeometries.js';
+
+  import {
+    setupGumball,
+    setGumballEnabled,
+    updateGumballTarget,
+    isGumballDragging,
+    isMouseOverGumball
+  } from './gumball.js';
+
 
 ////////////////////////////////////////////////////////
 ///////////////        Declarations       //////////////
@@ -23,6 +34,7 @@ let isDragging = false;
 let dragStart = new THREE.Vector2();
 let dragEnd = new THREE.Vector2();
 const points = [];
+let isDraggingGumball = false;
 
 //snapped point preview when drawing
 const snapPoint = rg.createSnapPoint(0.2, 0xffffff);
@@ -34,13 +46,6 @@ const selectionRect = document.getElementById('selection-rect');
 ////////////////////////////////////////////////////////
 ///////////////          Setup           ///////////////
 ////////////////////////////////////////////////////////
-
-//control panel setup
-let currentMode = 'draw';
-setupControlPanel((newMode) => {
-  currentMode = newMode;
-  console.log(`Switched to mode: ${currentMode}`);
-});
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -55,6 +60,23 @@ document.body.appendChild(renderer.domElement);
 //camera controls setup
 const controls = setupCameraControls(camera, renderer);
 
+
+
+//control panel setup
+let currentMode = 'draw';
+setupControlPanel(
+    (newMode) => {
+      currentMode = newMode;
+    },
+    (gumballEnabled) => {
+        setGumballEnabled(gumballEnabled);
+        const selected = getSelection();
+        updateGumballTarget(selected.length === 1 ? selected[0] : null);
+      }
+  );
+
+setupGumball(scene,camera,renderer.domElement,controls);
+
 // Grid and work plane setup
 const snapPlane = rg.createGridAndPlane(scene);
 
@@ -68,24 +90,37 @@ renderer.domElement.addEventListener('mousemove', (e) => {
     rg.updateSnapPoint(snapPoint, snapLocation, scene);
 });
 
-renderer.domElement.addEventListener('pointerdown', (e) => {
-    if (currentMode !== 'select' || e.button !== 0) return;
-    isDragging = true;
-    dragStart.set(e.clientX, e.clientY);
-    selectionRect.style.display = 'block';
+window.addEventListener('pointerdown', (e) => {
 
-    // Clear the selection box right away
-    Object.assign(selectionRect.style, {
-      left: '0px',
-      top: '0px',
-      width: '0px',
-      height: '0px',
-      display: 'none',
-    });
+  if (currentMode !== 'select' || e.button !== 0) return;
+
+  Object.assign(selectionRect.style, {
+    left: '0px',
+    top: '0px',
+    width: '0px',
+    height: '0px',
+  });
+  
+  const mouse = new THREE.Vector2(
+    (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
+    -(e.clientY / renderer.domElement.clientHeight) * 2 + 1
+  );
+  const raycaster = new THREE.Raycaster();
+  raycaster.setFromCamera(mouse, camera);
+
+  //isDraggingGumball = isMouseOnGumball(raycaster);
+  isDraggingGumball = isMouseOverGumball();
+  if(isDraggingGumball) return;
+
+  console.log("dragging");
+  isDragging = true;
+  dragStart.set(e.clientX, e.clientY);
+  selectionRect.style.display = 'block';
+
 });
 
-renderer.domElement.addEventListener('pointermove', (e) => {
-    if (!isDragging) return;
+window.addEventListener('pointermove', (e) => {
+    if (!isDragging ) return;
     dragEnd.set(e.clientX, e.clientY);
 
     const x = Math.min(dragStart.x, dragEnd.x);
@@ -98,12 +133,12 @@ renderer.domElement.addEventListener('pointermove', (e) => {
         top: `${y}px`,
         width: `${width}px`,
         height: `${height}px`,
-        display: 'block'
     });
 });
 
-renderer.domElement.addEventListener('pointerup', (e) => {
+window.addEventListener('pointerup', (e) => {
 // Hide and reset the selection box
+  if(isDraggingGumball) return;
 
     Object.assign(selectionRect.style, {
         left: '0px',
@@ -140,7 +175,9 @@ renderer.domElement.addEventListener('pointerup', (e) => {
     }
     if (dragDistance > 3) {
     // Box select
-    handleBoxSelection(ndcStart, ndcEnd, camera, scene, e.shiftKey);
+    handleBoxSelection(ndcStart, ndcEnd, camera, scene, e.shiftKey, isGumballDragging());
+    const selected = getSelection();
+    updateGumballTarget(selected[0]);
     } else {
         if (e.target.closest('#control-panel')) return;
         if(currentMode == 'draw'){
@@ -152,6 +189,8 @@ renderer.domElement.addEventListener('pointerup', (e) => {
         if (currentMode === 'select') {
             const append = e.shiftKey;
             handleClickSelection(e, camera, renderer, scene, append);
+            const selected = getSelection();
+            updateGumballTarget(selected[0]);
         }
     }
     isDragging = false;

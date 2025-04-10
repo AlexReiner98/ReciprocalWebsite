@@ -14,7 +14,9 @@ import {
     registerAddedObjects,
     undo,
     redo,
-    getSelection
+    getSelection,
+    getSelectionGroup,
+    setupSelection
   } from './selection.js';
 
   import {
@@ -53,6 +55,8 @@ const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerH
 const initialDistance = 50;
 camera.position.set(initialDistance, initialDistance, initialDistance);
 
+setupSelection(scene);
+
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -71,7 +75,7 @@ setupControlPanel(
     (gumballEnabled) => {
         setGumballEnabled(gumballEnabled);
         const selected = getSelection();
-        updateGumballTarget(selected.length === 1 ? selected[0] : null);
+        updateGumballTarget(getSelectionGroup());
       }
   );
 
@@ -116,7 +120,6 @@ window.addEventListener('pointerdown', (e) => {
   isDragging = true;
   dragStart.set(e.clientX, e.clientY);
   selectionRect.style.display = 'block';
-
 });
 
 window.addEventListener('pointermove', (e) => {
@@ -138,7 +141,7 @@ window.addEventListener('pointermove', (e) => {
 
 window.addEventListener('pointerup', (e) => {
 // Hide and reset the selection box
-  if(isDraggingGumball) return;
+  if(isDraggingGumball || e.button != 0) return;
 
     Object.assign(selectionRect.style, {
         left: '0px',
@@ -147,7 +150,6 @@ window.addEventListener('pointerup', (e) => {
         height: '0px',
         display: 'none',
     });
-
 
     var dragDistance = 0;
     var ndcStart;
@@ -176,8 +178,7 @@ window.addEventListener('pointerup', (e) => {
     if (dragDistance > 3) {
     // Box select
     handleBoxSelection(ndcStart, ndcEnd, camera, scene, e.shiftKey, isGumballDragging());
-    const selected = getSelection();
-    updateGumballTarget(selected[0]);
+    updateGumballTarget(getSelectionGroup());
     } else {
         if (e.target.closest('#control-panel')) return;
         if(currentMode == 'draw'){
@@ -189,8 +190,8 @@ window.addEventListener('pointerup', (e) => {
         if (currentMode === 'select') {
             const append = e.shiftKey;
             handleClickSelection(e, camera, renderer, scene, append);
-            const selected = getSelection();
-            updateGumballTarget(selected[0]);
+            
+            updateGumballTarget(getSelectionGroup());
         }
     }
     isDragging = false;

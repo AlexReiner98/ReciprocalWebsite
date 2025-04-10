@@ -1,9 +1,35 @@
 import * as THREE from "three";
 
 let selectedObjects = new Set();
+export const selectionGroup = new THREE.Group();
+selectionGroup.name = 'SelectionGroup';
+
+let sceneRef = null;
+
 let selectionColor = new THREE.Color(0xffff00);
 let undoStack = [];
 let redoStack = [];
+
+export function setupSelection(scene)
+{
+  if (!scene) return;
+  if (!sceneRef) {
+    sceneRef = scene;
+    sceneRef.add(selectionGroup);
+  }
+}
+
+function syncSelectionGroup() {
+  // Detach previous members
+  [...selectionGroup.children].forEach(obj => {
+    sceneRef.attach(obj);
+  });
+
+  // Attach selected objects to the group
+  selectedObjects.forEach(obj => {
+    selectionGroup.attach(obj);
+  });
+}
 
 export function clearSelection() {
   selectedObjects.forEach(obj => {
@@ -12,6 +38,7 @@ export function clearSelection() {
     }
   });
   selectedObjects.clear();
+  syncSelectionGroup();
 }
 
 export function selectObject(obj) {
@@ -23,6 +50,7 @@ export function selectObject(obj) {
 
   obj.material.color.copy(selectionColor);
   selectedObjects.add(obj);
+  syncSelectionGroup();
 }
 
 export function selectObjects(objects) {
@@ -31,6 +59,10 @@ export function selectObjects(objects) {
 
 export function getSelection() {
   return [...selectedObjects];
+}
+
+export function getSelectionGroup(){
+  return selectionGroup;
 }
 
 // Action wrapper

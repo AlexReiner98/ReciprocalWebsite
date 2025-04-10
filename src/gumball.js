@@ -30,15 +30,16 @@ export function setGumballEnabled(enabled) {
     }
 }
 
-export function updateGumballTarget(object) {
+export function updateGumballTarget(selectionGroup) {
   if (!gumballActive || !transformControls) return;
-  if (object) {
-    transformControls.attach(object);
-    transformControls.visible = true;
-  } else {
+
+  if (selectionGroup.children.length === 0) {
     transformControls.detach();
     transformControls.visible = false;
+    return;
   }
+  transformControls.attach(selectionGroup);
+  transformControls.visible = true;
 }
 
 export function isGumballDragging() {

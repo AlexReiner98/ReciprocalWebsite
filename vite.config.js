@@ -10,4 +10,10 @@ export default defineConfig({
       },
     },
   },
+  resolve: {
+    dedupe: ['three'],
+  },
+  optimizeDeps: {
+    include: ['three', 'three/examples/jsm/controls/TransformControls'],
+  }
 })

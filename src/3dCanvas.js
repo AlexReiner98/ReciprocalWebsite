@@ -14,15 +14,13 @@ import {
     registerAddedObjects,
     undo,
     redo,
-    getSelection,
-    getSelectionGroup,
-    setupSelection
+    setupSelection,
+    clearSelection,
   } from './selection.js';
 
   import {
     setupGumball,
     setGumballEnabled,
-    updateGumballTarget,
     isGumballDragging,
     isMouseOverGumball
   } from './gumball.js';
@@ -73,10 +71,8 @@ setupControlPanel(
       currentMode = newMode;
     },
     (gumballEnabled) => {
-        setGumballEnabled(gumballEnabled);
-        const selected = getSelection();
-        updateGumballTarget(getSelectionGroup());
-      }
+      setGumballEnabled(gumballEnabled);
+    }
   );
 
 setupGumball(scene,camera,renderer.domElement,controls);
@@ -112,11 +108,9 @@ window.addEventListener('pointerdown', (e) => {
   const raycaster = new THREE.Raycaster();
   raycaster.setFromCamera(mouse, camera);
 
-  //isDraggingGumball = isMouseOnGumball(raycaster);
   isDraggingGumball = isMouseOverGumball();
   if(isDraggingGumball) return;
 
-  console.log("dragging");
   isDragging = true;
   dragStart.set(e.clientX, e.clientY);
   selectionRect.style.display = 'block';
@@ -175,10 +169,11 @@ window.addEventListener('pointerup', (e) => {
         Math.max(dragStart.y, e.clientY) / h
         );
     }
+    isDragging = false;
+
     if (dragDistance > 3) {
     // Box select
     handleBoxSelection(ndcStart, ndcEnd, camera, scene, e.shiftKey, isGumballDragging());
-    updateGumballTarget(getSelectionGroup());
     } else {
         if (e.target.closest('#control-panel')) return;
         if(currentMode == 'draw'){
@@ -186,15 +181,14 @@ window.addEventListener('pointerup', (e) => {
             points.push(savePoint);
             scene.add(savePoint);
             registerAddedObjects([savePoint]);
+            clearSelection();
         }
         if (currentMode === 'select') {
             const append = e.shiftKey;
             handleClickSelection(e, camera, renderer, scene, append);
-            
-            updateGumballTarget(getSelectionGroup());
         }
     }
-    isDragging = false;
+    
 });
 
 window.addEventListener('keydown', (e) => {

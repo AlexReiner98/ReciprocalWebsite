@@ -1,7 +1,8 @@
 import * as THREE from "three";
+import {updateGumballTarget } from "./gumball.js";
 
 let selectedObjects = new Set();
-export const selectionGroup = new THREE.Group();
+const selectionGroup = new THREE.Group();
 selectionGroup.name = 'SelectionGroup';
 
 let sceneRef = null;
@@ -25,10 +26,20 @@ function syncSelectionGroup() {
     sceneRef.attach(obj);
   });
 
+  const centroid = computeSelectionCentroid();
+  if(centroid)
+  {
+    console.log(centroid);
+    selectionGroup.position.copy(centroid);
+  }
+
+
   // Attach selected objects to the group
   selectedObjects.forEach(obj => {
     selectionGroup.attach(obj);
   });
+
+  updateGumballTarget(selectionGroup);
 }
 
 export function clearSelection() {
@@ -39,6 +50,7 @@ export function clearSelection() {
   });
   selectedObjects.clear();
   syncSelectionGroup();
+  
 }
 
 export function selectObject(obj) {
@@ -50,7 +62,6 @@ export function selectObject(obj) {
 
   obj.material.color.copy(selectionColor);
   selectedObjects.add(obj);
-  syncSelectionGroup();
 }
 
 export function selectObjects(objects) {
@@ -63,6 +74,28 @@ export function getSelection() {
 
 export function getSelectionGroup(){
   return selectionGroup;
+}
+
+export function isSelection()
+{
+  return selectedObjects.size > 0;
+}
+
+function computeSelectionCentroid()
+{
+  if (selectedObjects.size === 0) return;
+
+  const centroid = new THREE.Vector3();
+
+  selectedObjects.forEach(obj => {
+    const worldPos = new THREE.Vector3();
+    obj.getWorldPosition(worldPos);
+    centroid.add(worldPos);
+  });
+
+  centroid.divideScalar(selectedObjects.size);
+
+  return centroid;
 }
 
 // Action wrapper
@@ -141,10 +174,11 @@ export function handleClickSelection(event, camera, renderer, scene, append = fa
   } else if (!append) {
     clearSelection();
   }
+  syncSelectionGroup();
+  
 }
 
 export function handleBoxSelection(start, end, camera, scene, append = false, isGumballDragging) {
-  console.log("Gumball dragging: " + isGumballDragging); 
   if(isGumballDragging) return;
   if (!append) clearSelection();
 
@@ -166,4 +200,5 @@ export function handleBoxSelection(start, end, camera, scene, append = false, is
       selectObject(point);
     }
   }
+  syncSelectionGroup();
 }

@@ -34,9 +34,11 @@ export function setupControlPanel(onModeChange, onGumballToggle) {
   // Setup gumball toggle
   const gumballButton = document.querySelector('#control-panel button[data-toggle="gumball"]');
   if (gumballButton) {
+    
     gumballButton.addEventListener('click', toggleGumball);
   }
 
   // Initial state
   setMode(currentMode);
+  gumballButton.click();
 }

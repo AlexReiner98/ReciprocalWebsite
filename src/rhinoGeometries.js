@@ -4,7 +4,7 @@ import * as THREE from "three";
 export function createGridAndPlane(scene) {
   // Grid helper
   const gridSize = 2000;
-  const axisOffset = 0.1;
+  const axisOffset = 0.03;
   const grid = new THREE.GridHelper(gridSize, gridSize);
   scene.add(grid);
 

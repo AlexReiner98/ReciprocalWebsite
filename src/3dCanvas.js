@@ -179,7 +179,7 @@ window.addEventListener('pointerup', (e) => {
   } else {
     if (e.target.closest('#control-panel')) return;
     if(currentMode == 'draw'){
-        const savePoint = rg.createSavedPoint(snapLocation,0.5, 0xff2d00);
+        const savePoint = rg.createSavedPoint(snapLocation,0.3, 0xff2d00);
         points.push(savePoint);
         scene.add(savePoint);
         registerAddedObjects([savePoint]);

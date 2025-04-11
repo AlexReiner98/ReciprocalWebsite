@@ -51,7 +51,7 @@ const selectionRect = document.getElementById('selection-rect');
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 const initialDistance = 50;
-camera.position.set(initialDistance, initialDistance, initialDistance);
+camera.position.set(-initialDistance, initialDistance, -initialDistance);
 
 setupSelection(scene);
 
@@ -85,9 +85,8 @@ const snapPlane = rg.createGridAndPlane(scene);
 ////////////////////////////////////////////////////////
 
 renderer.domElement.addEventListener('mousemove', (e) => {
-    if(currentMode == 'select') return;
     snapLocation = rg.getSnappedLocation(e, snapPlane, camera, renderer);
-    rg.updateSnapPoint(snapPoint, snapLocation, scene);
+    rg.updateSnapPoint(snapPoint, snapLocation, scene, currentMode);
 });
 
 window.addEventListener('pointerdown', (e) => {

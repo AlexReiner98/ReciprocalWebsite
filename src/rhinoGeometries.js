@@ -3,8 +3,28 @@ import * as THREE from "three";
 
 export function createGridAndPlane(scene) {
   // Grid helper
-  const grid = new THREE.GridHelper(2000, 2000);
+  const gridSize = 2000;
+  const axisOffset = 0.1;
+  const grid = new THREE.GridHelper(gridSize, gridSize);
   scene.add(grid);
+
+  // Highlight X axis in red
+  const xAxisMat = new THREE.LineBasicMaterial({ color: 0xff0000 });
+  const xAxisGeo = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(0, axisOffset, 0),
+    new THREE.Vector3(gridSize / 2, axisOffset, 0),
+  ]);
+  const xAxis = new THREE.Line(xAxisGeo, xAxisMat);
+  scene.add(xAxis);
+
+// Highlight Z axis in green
+  const zAxisMat = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+  const zAxisGeo = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(0, axisOffset, 0),
+    new THREE.Vector3(0, axisOffset, gridSize / 2),
+  ]);
+  const zAxis = new THREE.Line(zAxisGeo, zAxisMat);
+  scene.add(zAxis);
 
   // Snap plane (horizontal on Y=0)
   const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
@@ -40,9 +60,13 @@ export function createSnapPoint(radius, colour){
   return snapPoint;
 }
 
-export function updateSnapPoint(point, vector, scene) {
-  point.position.copy(vector);
-  scene.add(point);
+export function updateSnapPoint(point, vector, scene,mode) {
+  if(mode === 'draw'){
+    point.position.copy(vector);
+    scene.add(point);
+  }
+  else scene.remove(point);
+
 }
 
 export function createSavedPoint(location, radius, color, data = {}) {

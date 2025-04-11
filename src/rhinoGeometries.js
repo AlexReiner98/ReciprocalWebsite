@@ -1,7 +1,13 @@
 // src/grid.js
 import * as THREE from "three";
+import { isMirrorXActive } from "./controlPanel";
+
+let sceneRef = null;
+const mirroredPoints = [];
+const mirrorColour = 0x808080;
 
 export function createGridAndPlane(scene) {
+  sceneRef = scene;
   // Grid helper
   const gridSize = 2000;
   const axisOffset = 0.03;
@@ -66,7 +72,6 @@ export function updateSnapPoint(point, vector, scene,mode) {
     scene.add(point);
   }
   else scene.remove(point);
-
 }
 
 export function createSavedPoint(location, radius, color, data = {}) {
@@ -78,7 +83,84 @@ export function createSavedPoint(location, radius, color, data = {}) {
     type: 'point',
     original: data, // your source data
     id: data.id || crypto.randomUUID(), // optional unique ID
+    locked: false,
+    mirrored: false
   };
 
   return point;
+}
+
+export function createNewMirroPoint(point)
+{
+  if(!sceneRef) return;
+  if (isMirrorXActive() && point) {
+    const worldPos = new THREE.Vector3();
+    point.getWorldPosition(worldPos);
+
+    const mirrored = point.clone();
+    mirrored.position.copy(worldPos);
+    mirrored.position.z *= -1; // mirror across X
+    mirrored.userData = { ...point.userData, locked: true, mirrored: true , source: point};
+    const mat = new THREE.MeshBasicMaterial({color: mirrorColour});
+    mirrored.material = mat; // avoid shared material mutation
+
+    sceneRef.add(mirrored);
+    mirroredPoints.push(mirrored);
+  }
+}
+
+export function mirrorVisiblePointsAcrossX() {
+  if(!sceneRef)return;
+  
+  const allPoints = [];
+  sceneRef.traverse(obj => {
+    if (
+      obj.userData?.type === 'point' &&
+      !obj.userData.locked &&
+      !obj.userData.mirrored
+    ) {
+      allPoints.push(obj);
+    }
+  });
+
+  for (const point of allPoints) {
+    const worldPos = new THREE.Vector3();
+    point.getWorldPosition(worldPos);
+
+    const mirrored = point.clone();
+    mirrored.position.copy(worldPos);
+    mirrored.position.z *= -1; // mirror across X
+    mirrored.userData = { ...point.userData, locked: true, mirrored: true , source: point};
+    const mat = new THREE.MeshBasicMaterial({color: mirrorColour});
+    mirrored.material = mat; // avoid shared material mutation
+
+    sceneRef.add(mirrored);
+    mirroredPoints.push(mirrored);
+  }
+}
+
+export function removeMirroredPoints() {
+  mirroredPoints.forEach(p => sceneRef.remove(p));
+  mirroredPoints.length = 0;
+}
+
+export function updateMirroredPoints() {
+  for (const mirrored of mirroredPoints) {
+    const source = mirrored.userData.source;
+    if (!source) continue;
+
+    const worldPos = new THREE.Vector3();
+    source.getWorldPosition(worldPos);
+
+    // Apply mirror across X
+    worldPos.z *= -1;
+
+    // If mirrored point has a parent, convert to local space
+    if (mirrored.parent) {
+      const localPos = mirrored.parent.worldToLocal(worldPos.clone());
+      mirrored.position.copy(localPos);
+    } else {
+      mirrored.position.copy(worldPos);
+    }
+  }
 }

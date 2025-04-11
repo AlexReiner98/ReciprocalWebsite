@@ -23,7 +23,7 @@ export function setupSelection(scene)
 }
 
 function syncSelectionGroup() {
-
+  
   detachObjects(selectionGroup);
 
   // Detach previous members
@@ -31,7 +31,13 @@ function syncSelectionGroup() {
     sceneRef.attach(obj);
   });
 
-  const centroid = computeSelectionCentroid();
+  const unlocked = []
+  selectedObjects.forEach(obj => {
+    if (!obj.userData.locked) {
+      unlocked.push(obj);
+    }
+  });
+  const centroid = computeObjectsCentroid(unlocked);
   if(centroid)
   {
     selectionGroup.position.copy(centroid);
@@ -39,7 +45,7 @@ function syncSelectionGroup() {
 
 
   // Attach selected objects to the group
-  selectedObjects.forEach(obj => {
+  unlocked.forEach(obj => {
     selectionGroup.attach(obj);
   });
 
@@ -102,19 +108,19 @@ export function isSelection()
   return selectedObjects.size > 0;
 }
 
-function computeSelectionCentroid()
+function computeObjectsCentroid(objects)
 {
-  if (selectedObjects.size === 0) return;
+  if (objects.length === 0) return;
 
   const centroid = new THREE.Vector3();
 
-  selectedObjects.forEach(obj => {
+  objects.forEach(obj => {
     const worldPos = new THREE.Vector3();
     obj.getWorldPosition(worldPos);
     centroid.add(worldPos);
   });
 
-  centroid.divideScalar(selectedObjects.size);
+  centroid.divideScalar(objects.length);
 
   return centroid;
 }

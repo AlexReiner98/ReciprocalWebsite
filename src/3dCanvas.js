@@ -31,10 +31,14 @@ import {
 ////////////////////////////////////////////////////////
 
 let isDragging = false;
+let isDraggingGumball = false;
+
 let dragStart = new THREE.Vector2();
 let dragEnd = new THREE.Vector2();
+
 const points = [];
-let isDraggingGumball = false;
+
+
 
 //snapped point preview when drawing
 const snapPoint = rg.createSnapPoint(0.2, 0xffffff);
@@ -184,6 +188,8 @@ window.addEventListener('pointerup', (e) => {
         scene.add(savePoint);
         registerAddedObjects([savePoint]);
         clearSelection();
+        rg.createNewMirroPoint(savePoint);
+
     }
     if (currentMode === 'select') {
 

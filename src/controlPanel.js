@@ -1,7 +1,15 @@
 // src/controlPanel.js
+import {mirrorVisiblePointsAcrossX,
+  removeMirroredPoints
+ } from "./rhinoGeometries.js";
+
+ 
+ let mirrorXActive = false;
+
 export function setupControlPanel(onModeChange, onGumballToggle) {
   let currentMode = 'draw';
   let gumballActive = false;
+
 
   function setMode(mode) {
     currentMode = mode;
@@ -26,6 +34,19 @@ export function setupControlPanel(onModeChange, onGumballToggle) {
     }
   }
 
+  function toggleMirrorX() {
+    mirrorXActive = !mirrorXActive;
+  
+    const mirrorButton = document.querySelector('#control-panel button[data-toggle="mirrorx"]');
+    mirrorButton.classList.toggle('active', mirrorXActive);
+  
+    if (mirrorXActive) {
+      mirrorVisiblePointsAcrossX();
+    } else {
+      removeMirroredPoints();
+    }
+  }
+
   // Setup mode buttons
   document.querySelectorAll('#control-panel button[data-mode]').forEach(button => {
     button.addEventListener('click', () => setMode(button.dataset.mode));
@@ -38,7 +59,18 @@ export function setupControlPanel(onModeChange, onGumballToggle) {
     gumballButton.addEventListener('click', toggleGumball);
   }
 
+  // Setup mirror toggle
+  const mirrorButton = document.querySelector('#control-panel button[data-toggle="mirrorx"]');
+  if (mirrorButton) {
+    mirrorButton.addEventListener('click', toggleMirrorX);
+  }
+
   // Initial state
   setMode(currentMode);
   gumballButton.click();
+  mirrorButton.click();
+}
+
+export function isMirrorXActive(){
+  return mirrorXActive;
 }

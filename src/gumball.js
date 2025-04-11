@@ -3,6 +3,7 @@ import { TransformControls } from '../node_modules/three/examples/jsm/controls/T
 import { getSelectionGroup,
   registerTransformedObjects,
  } from './selection.js';
+import { updateMirroredPoints } from "./rhinoGeometries.js";
 
 let transformControls = null;
 let gumballActive = false;
@@ -27,6 +28,10 @@ export function setupGumball(scene, camera, domElement, orbitControls)
         const afterStates = captureWorldTransforms(selected);
         registerTransformedObjects(selected, beforeStates, afterStates);
       }
+    });
+
+    transformControls.addEventListener('change',() => {
+      updateMirroredPoints();
     });
 }
 
@@ -59,14 +64,14 @@ export function setGumballEnabled(enabled) {
 
 export function updateGumballTarget(selectionGroup) {
   if (!gumballActive || !transformControls) return;
-  if (selectionGroup.children.length === 0) {
+  const movable = selectionGroup.children;
+  if (movable.length === 0) {
     transformControls.detach();
     transformControls.visible = false;
-    return;
+  } else {
+    transformControls.attach(selectionGroup);
+    transformControls.visible = true;
   }
-
-  transformControls.attach(selectionGroup);
-  transformControls.visible = true;
 }
 
 export function detachObjects(selectionGroup){

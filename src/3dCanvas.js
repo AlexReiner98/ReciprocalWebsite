@@ -137,57 +137,60 @@ window.addEventListener('pointerup', (e) => {
 // Hide and reset the selection box
   if(isDraggingGumball || e.button != 0) return;
 
-    Object.assign(selectionRect.style, {
-        left: '0px',
-        top: '0px',
-        width: '0px',
-        height: '0px',
-        display: 'none',
-    });
+  Object.assign(selectionRect.style, {
+      left: '0px',
+      top: '0px',
+      width: '0px',
+      height: '0px',
+      display: 'none',
+  });
 
-    var dragDistance = 0;
-    var ndcStart;
-    var ndcEnd;
-    if(isDragging)
-    {
-        // Convert screen space to normalized device coords
-        const w = renderer.domElement.clientWidth;
-        const h = renderer.domElement.clientHeight;
+  var dragDistance = 0;
+  var ndcStart;
+  var ndcEnd;
+  if(isDragging)
+  {
+      // Convert screen space to normalized device coords
+      const w = renderer.domElement.clientWidth;
+      const h = renderer.domElement.clientHeight;
 
-        const deltaX = Math.abs(dragStart.x - e.clientX);
-        const deltaY = Math.abs(dragStart.y - e.clientY);
-        dragDistance = Math.max(deltaX, deltaY);
+      const deltaX = Math.abs(dragStart.x - e.clientX);
+      const deltaY = Math.abs(dragStart.y - e.clientY);
+      dragDistance = Math.max(deltaX, deltaY);
 
-        // Only do box selection if the mouse was actually dragged
-        
-        ndcStart = new THREE.Vector2(
-        Math.min(dragStart.x, e.clientX) / w,
-        Math.min(dragStart.y, e.clientY) / h
-        );
-        ndcEnd = new THREE.Vector2(
-        Math.max(dragStart.x, e.clientX) / w,
-        Math.max(dragStart.y, e.clientY) / h
-        );
+      // Only do box selection if the mouse was actually dragged
+      
+      ndcStart = new THREE.Vector2(
+      Math.min(dragStart.x, e.clientX) / w,
+      Math.min(dragStart.y, e.clientY) / h
+      );
+      ndcEnd = new THREE.Vector2(
+      Math.max(dragStart.x, e.clientX) / w,
+      Math.max(dragStart.y, e.clientY) / h
+      );
+  }
+  isDragging = false;
+
+  const append = [];
+  append.push(e.shiftKey);
+  append.push(e.ctrlKey);
+
+  if (dragDistance > 3) {
+  handleBoxSelection(ndcStart, ndcEnd, camera, scene, append, isGumballDragging());
+  } else {
+    if (e.target.closest('#control-panel')) return;
+    if(currentMode == 'draw'){
+        const savePoint = rg.createSavedPoint(snapLocation,0.5, 0xff2d00);
+        points.push(savePoint);
+        scene.add(savePoint);
+        registerAddedObjects([savePoint]);
+        clearSelection();
     }
-    isDragging = false;
+    if (currentMode === 'select') {
 
-    if (dragDistance > 3) {
-    // Box select
-    handleBoxSelection(ndcStart, ndcEnd, camera, scene, e.shiftKey, isGumballDragging());
-    } else {
-        if (e.target.closest('#control-panel')) return;
-        if(currentMode == 'draw'){
-            const savePoint = rg.createSavedPoint(snapLocation,0.5, 0xff2d00);
-            points.push(savePoint);
-            scene.add(savePoint);
-            registerAddedObjects([savePoint]);
-            clearSelection();
-        }
-        if (currentMode === 'select') {
-            const append = e.shiftKey;
-            handleClickSelection(e, camera, renderer, scene, append);
-        }
+        handleClickSelection(e, camera, renderer, scene, append);
     }
+  }
     
 });
 
@@ -197,6 +200,7 @@ window.addEventListener('keydown', (e) => {
     }
   
     if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+      clearSelection();
       undo(scene);
     }
   

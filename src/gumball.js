@@ -1,9 +1,13 @@
+import * as THREE from "three";
 import { TransformControls } from '../node_modules/three/examples/jsm/controls/TransformControls.js'
-import { getSelectionGroup } from './selection.js';
+import { getSelectionGroup,
+  registerTransformedObjects,
+ } from './selection.js';
 
 let transformControls = null;
 let gumballActive = false;
 let isDraggingWithGumball = false;
+let beforeStates = [];
 
 export function setupGumball(scene, camera, domElement, orbitControls)
 {
@@ -14,7 +18,27 @@ export function setupGumball(scene, camera, domElement, orbitControls)
 
     transformControls.addEventListener('dragging-changed', (event) => {
       orbitControls.enabled = !event.value;
+
+      const selected = [...getSelectionGroup().children];
+
+      if (event.value) {
+        beforeStates = captureWorldTransforms(selected);
+      } else {
+        const afterStates = captureWorldTransforms(selected);
+        registerTransformedObjects(selected, beforeStates, afterStates);
+      }
     });
+}
+
+function captureWorldTransforms(objects) {
+  return objects.map(obj => {
+    const matrix = obj.matrixWorld.clone();
+    const pos = new THREE.Vector3();
+    const quat = new THREE.Quaternion();
+    const scale = new THREE.Vector3();
+    matrix.decompose(pos, quat, scale);
+    return { position: pos, quaternion: quat, scale };
+  });
 }
 
 export function setGumballEnabled(enabled) {
@@ -43,6 +67,14 @@ export function updateGumballTarget(selectionGroup) {
 
   transformControls.attach(selectionGroup);
   transformControls.visible = true;
+}
+
+export function detachObjects(selectionGroup){
+  const wasAttached = transformControls?.object === selectionGroup;
+
+  if (wasAttached) {
+    transformControls.detach(); 
+  }
 }
 
 export function isGumballDragging() {

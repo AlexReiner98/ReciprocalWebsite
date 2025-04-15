@@ -2,6 +2,7 @@ import * as THREE from "three";
 import {updateGumballTarget,
   detachObjects
  } from "./gumball.js";
+import { updateMirroredPoints } from "./rhinoGeometries.js";
 
 let selectedObjects = new Set();
 const selectionGroup = new THREE.Group();
@@ -136,9 +137,22 @@ export function deleteSelected(scene) {
   clearSelection();
   if (toDelete.length === 0) return;
 
-  toDelete.forEach(obj => scene.remove(obj));
-  recordAction('delete', toDelete);
-  clearSelection();
+  const allToDelete = [...toDelete];
+
+  // Look for mirrored points linked to selected objects
+  for (const original of toDelete) {
+    scene.traverse(obj => {
+      if (
+        obj.userData?.mirrored &&
+        obj.userData.source?.userData?.id === original.userData.id
+      ) {
+        allToDelete.push(obj);
+      }
+    });
+  }
+
+  allToDelete.forEach(obj => scene.remove(obj));
+  recordAction('delete', allToDelete);
 }
 
 export function undo(scene) {
@@ -167,6 +181,7 @@ export function undo(scene) {
   }
 
   redoStack.push(action);
+  updateMirroredPoints();
 }
 
 export function redo(scene) {
@@ -190,7 +205,7 @@ export function redo(scene) {
       });
       break;
   }
-
+  updateMirroredPoints();
   undoStack.push(action);
 }
 

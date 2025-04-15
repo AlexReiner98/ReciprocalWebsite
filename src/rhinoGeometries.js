@@ -5,6 +5,7 @@ import { isMirrorXActive } from "./controlPanel";
 let sceneRef = null;
 const mirroredPoints = [];
 const mirrorColour = 0x808080;
+const texture = generateCircleTexture(); // or load a texture file
 
 export function createGridAndPlane(scene) {
   sceneRef = scene;
@@ -59,24 +60,61 @@ export function getSnappedLocation(event, plane, camera, renderer) {
 }
 
 export function createSnapPoint(radius, colour){
-  const snapPoint = new THREE.Mesh(
-    new THREE.SphereGeometry(radius, 12, 12),
-    new THREE.MeshBasicMaterial({ color: colour })
-  );
-  return snapPoint;
+  const geometry = new THREE.BufferGeometry();
+  const vertices = new Float32Array([0, 0, 0]);
+  geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+
+  const material = new THREE.PointsMaterial({
+    color: colour,
+    size: radius,
+    map: texture,
+    sizeAttenuation: true // optional: keeps size consistent on screen
+  });
+
+  const points = new THREE.Points(geometry, material);
+
+  points.userData = {
+    type: 'point',
+    id: crypto.randomUUID(),
+    locked: false,
+    mirrored: false
+  };
+
+  return points;
 }
 
-export function updateSnapPoint(point, vector, scene,mode) {
-  if(mode === 'draw'){
-    point.position.copy(vector);
-    scene.add(point);
-  }
-  else scene.remove(point);
+function generateCircleTexture() {
+  const size = 64;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+
+  const ctx = canvas.getContext('2d');
+  ctx.beginPath();
+  ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+  ctx.fillStyle = 'white';
+  ctx.fill();
+
+  const texture = new THREE.CanvasTexture(canvas);
+  return texture;
+}
+
+export function updateSnapPoint(point, vector) {
+
+  //const positionAttr = point.geometry.getAttribute('position');
+
+  // Update the values in the Float32Array
+  //positionAttr.setXYZ(0, vector.x, vector.y, vector.z);
+  //positionAttr.needsUpdate = true;
+
+  // Optionally, also update object position for bounding box/culling
+  point.position.copy(vector);
+  
 }
 
 export function createSavedPoint(location, radius, color, data = {}) {
   const point = createSnapPoint(radius, color);
-  point.position.copy(location);
+  updateSnapPoint(point, location);
 
   // Attach original data
   point.userData = {
@@ -97,15 +135,12 @@ export function createNewMirroPoint(point)
     const worldPos = new THREE.Vector3();
     point.getWorldPosition(worldPos);
 
-    const mirrored = point.clone();
-    mirrored.position.copy(worldPos);
-    mirrored.position.z *= -1; // mirror across X
-    mirrored.userData = { ...point.userData, locked: true, mirrored: true , source: point};
-    const mat = new THREE.MeshBasicMaterial({color: mirrorColour});
-    mirrored.material = mat; // avoid shared material mutation
-
-    sceneRef.add(mirrored);
-    mirroredPoints.push(mirrored);
+    const newPosition = new THREE.Vector3(worldPos.x,worldPos.y,-worldPos.z);
+    const mirroredPoint = createSavedPoint(newPosition, 2, mirrorColour);
+    mirroredPoint.userData = { ...point.userData, locked: true, mirrored: true , source: point};
+    console.log(mirroredPoint);
+    sceneRef.add(mirroredPoint);
+    mirroredPoints.push(mirroredPoint);
   }
 }
 
@@ -117,7 +152,9 @@ export function mirrorVisiblePointsAcrossX() {
     if (
       obj.userData?.type === 'point' &&
       !obj.userData.locked &&
-      !obj.userData.mirrored
+      !obj.userData.mirrored &&
+      !obj.userData.mouse
+
     ) {
       allPoints.push(obj);
     }
@@ -127,15 +164,12 @@ export function mirrorVisiblePointsAcrossX() {
     const worldPos = new THREE.Vector3();
     point.getWorldPosition(worldPos);
 
-    const mirrored = point.clone();
-    mirrored.position.copy(worldPos);
-    mirrored.position.z *= -1; // mirror across X
-    mirrored.userData = { ...point.userData, locked: true, mirrored: true , source: point};
-    const mat = new THREE.MeshBasicMaterial({color: mirrorColour});
-    mirrored.material = mat; // avoid shared material mutation
-
-    sceneRef.add(mirrored);
-    mirroredPoints.push(mirrored);
+    const newPosition = new THREE.Vector3(worldPos.x,worldPos.y,-worldPos.z);
+    const mirroredPoint = createSavedPoint(newPosition, 2, mirrorColour);
+    mirroredPoint.userData = { ...point.userData, locked: true, mirrored: true , source: point};
+    console.log(mirroredPoint);
+    sceneRef.add(mirroredPoint);
+    mirroredPoints.push(mirroredPoint);
   }
 }
 

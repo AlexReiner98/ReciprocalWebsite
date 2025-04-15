@@ -40,8 +40,7 @@ const points = [];
 
 
 
-//snapped point preview when drawing
-const snapPoint = rg.createSnapPoint(0.2, 0xffffff);
+
 var snapLocation;
 
 //selection plane
@@ -84,12 +83,19 @@ setupGumball(scene,camera,renderer.domElement,controls);
 // Grid and work plane setup
 const snapPlane = rg.createGridAndPlane(scene);
 
+//snapped point preview when drawing
+const snapPoint = rg.createSnapPoint(1, 0xffffff);
+snapPoint.userData.mouse = true;
+snapPoint.userData.locked = true;
+scene.add(snapPoint);
+
 ////////////////////////////////////////////////////////
 ///////////         Event-Listeners          ///////////
 ////////////////////////////////////////////////////////
 
 renderer.domElement.addEventListener('mousemove', (e) => {
     snapLocation = rg.getSnappedLocation(e, snapPlane, camera, renderer);
+    snapPoint.visible = (currentMode === 'draw');
     rg.updateSnapPoint(snapPoint, snapLocation, scene, currentMode);
 });
 
@@ -183,7 +189,7 @@ window.addEventListener('pointerup', (e) => {
   } else {
     if (e.target.closest('#control-panel')) return;
     if(currentMode == 'draw'){
-        const savePoint = rg.createSavedPoint(snapLocation,0.3, 0xff2d00);
+        const savePoint = rg.createSavedPoint(snapLocation, 2, 0xff2d00);
         points.push(savePoint);
         scene.add(savePoint);
         registerAddedObjects([savePoint]);

@@ -35,6 +35,12 @@ body {
     background: #eee;
   }
 
+  #gumball-modes {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* optional spacing */
+  }
+
   #selection-rect {
     position: absolute;
     border: 1px dashed #888;

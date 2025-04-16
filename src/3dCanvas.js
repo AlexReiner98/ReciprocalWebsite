@@ -99,6 +99,7 @@ renderer.domElement.addEventListener('mousemove', (e) => {
     rg.updateSnapPoint(snapPoint, snapLocation, scene, currentMode);
 });
 
+
 window.addEventListener('pointerdown', (e) => {
 
   if (currentMode !== 'select' || e.button !== 0) return;

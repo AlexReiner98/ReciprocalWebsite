@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { TransformControls } from '../node_modules/three/examples/jsm/controls/TransformControls.js'
 import { getSelectionGroup,
   registerTransformedObjects,
+  syncSelectionGroup,
  } from './selection.js';
 import { updateMirroredPoints } from "./rhinoGeometries.js";
 
@@ -16,6 +17,7 @@ export function setupGumball(scene, camera, domElement, orbitControls)
     scene.add(transformControls.getHelper()); 
     transformControls.visible = false;
     transformControls.translationSnap = 1.0;
+    transformControls.setMode('translate');
 
     transformControls.addEventListener('dragging-changed', (event) => {
       orbitControls.enabled = !event.value;
@@ -25,8 +27,10 @@ export function setupGumball(scene, camera, domElement, orbitControls)
       if (event.value) {
         beforeStates = captureWorldTransforms(selected);
       } else {
+        flattenGroupTransform(getSelectionGroup());
         const afterStates = captureWorldTransforms(selected);
         registerTransformedObjects(selected, beforeStates, afterStates);
+        syncSelectionGroup();
       }
     });
 
@@ -34,6 +38,26 @@ export function setupGumball(scene, camera, domElement, orbitControls)
       updateMirroredPoints();
     });
 }
+
+function flattenGroupTransform(group) {
+  const matrix = group.matrix.clone();
+  group.updateMatrixWorld(true);
+
+  group.children.forEach(child => {
+    child.applyMatrix4(matrix);
+  });
+
+  group.position.set(0, 0, 0);
+  group.rotation.set(0, 0, 0);
+  group.scale.set(1, 1, 1);
+}
+
+export function setGumballMode(mode){
+  if(!transformControls) return;
+  transformControls.setMode(mode);
+}
+
+
 
 function captureWorldTransforms(objects) {
   return objects.map(obj => {
@@ -80,6 +104,10 @@ export function detachObjects(selectionGroup){
   if (wasAttached) {
     transformControls.detach(); 
   }
+  transformControls.setSpace('world');
+  const obj = transformControls.object;
+  transformControls.detach();
+  transformControls.attach(obj);
 }
 
 export function isGumballDragging() {

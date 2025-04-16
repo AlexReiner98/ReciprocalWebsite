@@ -23,7 +23,7 @@ export function setupSelection(scene)
   }
 }
 
-function syncSelectionGroup() {
+export function syncSelectionGroup() {
   
   detachObjects(selectionGroup);
 
@@ -31,12 +31,9 @@ function syncSelectionGroup() {
   [...selectionGroup.children].forEach(obj => {
     sceneRef.attach(obj);
   });
-
   const unlocked = []
   selectedObjects.forEach(obj => {
-    if (!obj.userData.locked) {
-      unlocked.push(obj);
-    }
+    if(obj.userData?.type === 'point')unlocked.push(obj);
   });
   const centroid = computeObjectsCentroid(unlocked);
   if(centroid)
@@ -193,6 +190,7 @@ export function undo(scene) {
         obj.quaternion.copy(action.before[i].quaternion);
         obj.scale.copy(action.before[i].scale);
       });
+
       break;
   }
 
@@ -203,7 +201,7 @@ export function undo(scene) {
 export function redo(scene) {
   const action = redoStack.pop();
   if (!action) return;
-
+  centroid
   switch (action.type) {
     case 'delete':
       action.objects.forEach(obj => scene.remove(obj));

@@ -1,4 +1,5 @@
 // src/controlPanel.js
+import { setGumballMode } from "./gumball.js";
 import {mirrorVisiblePointsAcrossX,
   removeMirroredPoints
  } from "./rhinoGeometries.js";
@@ -25,13 +26,26 @@ export function setupControlPanel(onModeChange, onGumballToggle) {
 
   function toggleGumball() {
     gumballActive = !gumballActive;
-
+  
     const gumballButton = document.querySelector('#control-panel button[data-toggle="gumball"]');
+    const gumballModes = document.getElementById('gumball-modes');
+  
     gumballButton.classList.toggle('active', gumballActive);
-
+    gumballModes.style.display = gumballActive ? 'flex' : 'none';
+  
+    if (gumballActive) {
+      // Activate default mode: translate
+      const defaultButton = gumballModes.querySelector('button[gumball-mode="translate"]');
+      if (defaultButton) defaultButton.click(); // triggers mode selection
+    }
+  
     if (typeof onGumballToggle === 'function') {
       onGumballToggle(gumballActive);
     }
+  }
+
+  function onGumballModeChange(mode) {
+    setGumballMode(mode);
   }
 
   function toggleMirrorX() {
@@ -64,6 +78,21 @@ export function setupControlPanel(onModeChange, onGumballToggle) {
   if (mirrorButton) {
     mirrorButton.addEventListener('click', toggleMirrorX);
   }
+
+  document.querySelectorAll('#gumball-modes button[gumball-mode]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Remove 'active' from all mode buttons
+      document.querySelectorAll('#gumball-modes button[gumball-mode]').forEach(b => b.classList.remove('active'));
+  
+      // Add 'active' to clicked button
+      btn.classList.add('active');
+  
+      const mode = btn.getAttribute('gumball-mode');
+      if (typeof onGumballModeChange === 'function') {
+        onGumballModeChange(mode);
+      }
+    });
+  });
 
   // Initial state
   setMode(currentMode);

@@ -2,7 +2,7 @@ import * as THREE from "three";
 import {updateGumballTarget,
   detachObjects
  } from "./gumball.js";
-import { updateMirroredPoints } from "./rhinoGeometries.js";
+import { addMirroredPoint, removeMirroredPoint, updateMirroredPoints } from "./rhinoGeometries.js";
 
 let selectedObjects = new Set();
 const selectionGroup = new THREE.Group();
@@ -145,9 +145,12 @@ export function deleteSelected(scene) {
 
   //remove mirrored points so they can't be deleted directly
   const toDelete = [];
-  for(const original of toDelete)
+  for(const original of selected)
   {
-    if(!original.userData?.mirrored) toDelete.push(original);
+    if(!original.userData?.mirrored) {
+      toDelete.push(original);
+      console.log("adding to delete");
+    }
   }
 
   const allToDelete = [...toDelete];
@@ -179,6 +182,7 @@ export function undo(scene) {
     case 'add':
       action.objects.forEach(obj => {
         scene.remove(obj);
+        if(obj.userData?.mirroredPoint)removeMirroredPoint(obj.userData.mirroredPoint);
         selectedObjects.delete(obj);
       });
       break;
@@ -206,7 +210,9 @@ export function redo(scene) {
       break;
 
     case 'add':
-      action.objects.forEach(obj => scene.add(obj));
+      action.objects.forEach(obj => {scene.add(obj)
+      if(obj.userData?.mirroredPoint) addMirroredPoint(obj.userData.mirroredPoint);
+      });
       break;
     
     case 'transform':
@@ -222,10 +228,23 @@ export function redo(scene) {
 }
 
 export function registerAddedObjects(objects) {
-  undoStack.push({ type: 'add', objects });
-  redoStack.length = 0; // Clear redo on new action
-}
+  const all = [...objects];
 
+  for (const obj of objects) {
+    // Look for any mirrored counterparts in the scene
+    sceneRef.traverse(child => {
+      if (
+        child.userData?.mirrored &&
+        child.userData.source?.userData?.id === obj.userData?.id
+      ) {
+        all.push(child);
+      }
+    });
+  }
+
+  undoStack.push({ type: 'add', objects: all });
+  redoStack.length = 0;
+}
 export function registerTransformedObjects(objects, before, after) {
   undoStack.push({
     type: 'transform',

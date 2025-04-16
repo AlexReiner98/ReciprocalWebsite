@@ -133,6 +133,7 @@ export function createNewMirroPoint(point) {
     mirroredPoint.userData.locked = true;
     mirroredPoint.userData.mirrored = true;
     mirroredPoint.userData.source = point;
+    point.userData.mirroredPoint = mirroredPoint;
 
     sceneRef.add(mirroredPoint);
     mirroredPoints.push(mirroredPoint);
@@ -159,9 +160,7 @@ export function mirrorVisiblePointsAcrossX() {
     const worldPos = new THREE.Vector3();
     point.getWorldPosition(worldPos);
 
-    const newPosition = new THREE.Vector3(worldPos.x,worldPos.y,-worldPos.z);
-    const mirroredPoint = createSavedPoint(newPosition, 2, mirrorColour);
-    mirroredPoint.userData = { ...point.userData, locked: true, mirrored: true , source: point};
+    const mirroredPoint = createNewMirroPoint(point);
     sceneRef.add(mirroredPoint);
     mirroredPoints.push(mirroredPoint);
   }
@@ -191,4 +190,15 @@ export function updateMirroredPoints() {
       mirrored.position.copy(worldPos);
     }
   }
+}
+
+export function removeMirroredPoint(point) {
+  const index = mirroredPoints.indexOf(point);
+  if (index !== -1) mirroredPoints.splice(index, 1);
+  sceneRef.remove(point);
+}
+
+export function addMirroredPoint(point) {
+  mirroredPoints.push(point);
+  sceneRef.add(point);
 }

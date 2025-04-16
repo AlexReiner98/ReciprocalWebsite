@@ -13,6 +13,7 @@ export function createGridAndPlane(scene) {
   const gridSize = 2000;
   const axisOffset = 0.03;
   const grid = new THREE.GridHelper(gridSize, gridSize);
+  grid.raycast = () => {}; // makes it unselectable
   scene.add(grid);
 
   // Highlight X axis in red
@@ -22,6 +23,7 @@ export function createGridAndPlane(scene) {
     new THREE.Vector3(gridSize / 2, axisOffset, 0),
   ]);
   const xAxis = new THREE.Line(xAxisGeo, xAxisMat);
+  xAxis.raycast = () => {}; // makes it unselectable
   scene.add(xAxis);
 
 // Highlight Z axis in green
@@ -31,10 +33,12 @@ export function createGridAndPlane(scene) {
     new THREE.Vector3(0, axisOffset, gridSize / 2),
   ]);
   const zAxis = new THREE.Line(zAxisGeo, zAxisMat);
+  zAxis.raycast = () => {}; // makes it unselectable
   scene.add(zAxis);
 
   // Snap plane (horizontal on Y=0)
   const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+  plane.raycast = () => {}; // makes it unselectable
   return plane;
 }
 
@@ -59,7 +63,7 @@ export function getSnappedLocation(event, plane, camera, renderer) {
   return intersection;
 }
 
-export function createSnapPoint(radius, colour){
+export function createSnapPoint(radius, colour, id = null){
   const geometry = new THREE.BufferGeometry();
   const vertices = new Float32Array([0, 0, 0]);
   geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
@@ -68,14 +72,14 @@ export function createSnapPoint(radius, colour){
     color: colour,
     size: radius,
     map: texture,
-    sizeAttenuation: true // optional: keeps size consistent on screen
+    sizeAttenuation: true
   });
 
   const points = new THREE.Points(geometry, material);
 
   points.userData = {
     type: 'point',
-    id: crypto.randomUUID(),
+    id: id || crypto.randomUUID(),
     locked: false,
     mirrored: false
   };
@@ -100,45 +104,36 @@ function generateCircleTexture() {
 }
 
 export function updateSnapPoint(point, vector) {
-
-  //const positionAttr = point.geometry.getAttribute('position');
-
-  // Update the values in the Float32Array
-  //positionAttr.setXYZ(0, vector.x, vector.y, vector.z);
-  //positionAttr.needsUpdate = true;
-
-  // Optionally, also update object position for bounding box/culling
   point.position.copy(vector);
-  
 }
 
 export function createSavedPoint(location, radius, color, data = {}) {
-  const point = createSnapPoint(radius, color);
+  const id = data.id || crypto.randomUUID();
+  const point = createSnapPoint(radius, color, id);
   updateSnapPoint(point, location);
 
-  // Attach original data
-  point.userData = {
-    type: 'point',
-    original: data, // your source data
-    id: data.id || crypto.randomUUID(), // optional unique ID
-    locked: false,
-    mirrored: false
-  };
+  // Add extra data without overwriting the base userData
+  point.userData.original = data;
+  point.userData.locked = false;
+  point.userData.mirrored = false;
 
   return point;
 }
 
-export function createNewMirroPoint(point)
-{
-  if(!sceneRef) return;
+export function createNewMirroPoint(point) {
+  if (!sceneRef) return;
   if (isMirrorXActive() && point) {
     const worldPos = new THREE.Vector3();
     point.getWorldPosition(worldPos);
 
-    const newPosition = new THREE.Vector3(worldPos.x,worldPos.y,-worldPos.z);
-    const mirroredPoint = createSavedPoint(newPosition, 2, mirrorColour);
-    mirroredPoint.userData = { ...point.userData, locked: true, mirrored: true , source: point};
-    console.log(mirroredPoint);
+    const newPosition = new THREE.Vector3(worldPos.x, worldPos.y, -worldPos.z);
+    const mirroredPoint = createSnapPoint(2, mirrorColour); // NEW ID
+    updateSnapPoint(mirroredPoint, newPosition);
+
+    mirroredPoint.userData.locked = true;
+    mirroredPoint.userData.mirrored = true;
+    mirroredPoint.userData.source = point;
+
     sceneRef.add(mirroredPoint);
     mirroredPoints.push(mirroredPoint);
   }
@@ -167,7 +162,6 @@ export function mirrorVisiblePointsAcrossX() {
     const newPosition = new THREE.Vector3(worldPos.x,worldPos.y,-worldPos.z);
     const mirroredPoint = createSavedPoint(newPosition, 2, mirrorColour);
     mirroredPoint.userData = { ...point.userData, locked: true, mirrored: true , source: point};
-    console.log(mirroredPoint);
     sceneRef.add(mirroredPoint);
     mirroredPoints.push(mirroredPoint);
   }

@@ -82,13 +82,19 @@ export function removeFromSelectionMany(objs) {
 }
 
 export function selectObject(obj) {
+  console.log('Selecting', obj.uuid, obj.userData?.id);
+  if (!obj || selectedObjects.has(obj)) {
+    console.log('Already selected or invalid');
+    return;
+  }
   if (!obj || typeof obj !== 'object' || !obj.isObject3D || selectedObjects.has(obj)) return;
 
   obj.userData.originalMaterial = {
     color: obj.material.color.clone()
   };
 
-  obj.material.color.copy(selectionColor);
+  obj.material.color.set(selectionColor);
+
   selectedObjects.add(obj);
 }
 
@@ -133,12 +139,18 @@ function recordAction(type, objects) {
 }
 
 export function deleteSelected(scene) {
-  const toDelete = getSelection();
+  const selected = getSelection();
+  if(selected.length ===0) return;
   clearSelection();
-  if (toDelete.length === 0) return;
+
+  //remove mirrored points so they can't be deleted directly
+  const toDelete = [];
+  for(const original of toDelete)
+  {
+    if(!original.userData?.mirrored) toDelete.push(original);
+  }
 
   const allToDelete = [...toDelete];
-
   // Look for mirrored points linked to selected objects
   for (const original of toDelete) {
     scene.traverse(obj => {
@@ -232,7 +244,9 @@ export function handleClickSelection(event, camera, renderer, scene, append = [f
   mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
 
   raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(scene.children, true);
+  const points =  scene.children.filter(i => i.userData?.type === "point" && i.visible);
+
+  const intersects = raycaster.intersectObjects(points, true);
 
   const pointHit = intersects.find(i => i.object.userData?.type === 'point');
   if (pointHit) {
@@ -242,6 +256,7 @@ export function handleClickSelection(event, camera, renderer, scene, append = [f
     }
     else{
       if (!append[0]) clearSelection();
+      console.log(pointHit.object);
       selectObject(pointHit.object);
     } 
   } else if (!append[0]) {
@@ -276,7 +291,10 @@ export function handleBoxSelection(start, end, camera, scene, append = [false,fa
     const screenPos = toScreenSpace(worldPos);
     if(rect.containsPoint(screenPos)){
       if(append[1]) pointsToRemove.push(point);
-      else selectObject(point);
+      else {
+        selectObject(point);
+        console.log(point);
+      }
     }
   }
   if(pointsToRemove)removeFromSelectionMany(pointsToRemove);

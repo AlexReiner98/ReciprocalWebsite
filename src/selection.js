@@ -2,17 +2,21 @@ import * as THREE from "three";
 import {updateGumballTarget,
   detachObjects
  } from "./gumball.js";
-import { addMirroredPoint, removeMirroredPoint, updateMirroredPoints } from "./rhinoGeometries.js";
+import { addMirroredPoint, createSavedPoint, removeMirroredPoint, updateMirroredPoints, createNewMirroPoint } from "./rhinoGeometries.js";
+import { addPoint } from "./3dCanvas.js";
 
 let selectedObjects = new Set();
 const selectionGroup = new THREE.Group();
 selectionGroup.name = 'SelectionGroup';
+
+let copiedPoints = [];
 
 let sceneRef = null;
 
 let selectionColor = new THREE.Color(0xffff00);
 let undoStack = [];
 let redoStack = [];
+
 
 export function setupSelection(scene)
 {
@@ -61,12 +65,8 @@ export function clearSelection() {
 }
 
 export function removeFromSelection(obj) {
-  console.log("enter");
   if (!selectedObjects.has(obj)) return;
-  console.log("has");
-  // Restore material color
   if (obj.userData.originalMaterial) {
-    console.log("material");
     obj.material.color.copy(obj.userData.originalMaterial.color);
   }
 
@@ -79,9 +79,7 @@ export function removeFromSelectionMany(objs) {
 }
 
 export function selectObject(obj) {
-  console.log('Selecting', obj.uuid, obj.userData?.id);
   if (!obj || selectedObjects.has(obj)) {
-    console.log('Already selected or invalid');
     return;
   }
   if (!obj || typeof obj !== 'object' || !obj.isObject3D || selectedObjects.has(obj)) return;
@@ -146,7 +144,6 @@ export function deleteSelected(scene) {
   {
     if(!original.userData?.mirrored) {
       toDelete.push(original);
-      console.log("adding to delete");
     }
   }
 
@@ -273,7 +270,6 @@ export function handleClickSelection(event, camera, renderer, scene, append = [f
     }
     else{
       if (!append[0]) clearSelection();
-      console.log(pointHit.object);
       selectObject(pointHit.object);
     } 
   } else if (!append[0]) {
@@ -310,10 +306,30 @@ export function handleBoxSelection(start, end, camera, scene, append = [false,fa
       if(append[1]) pointsToRemove.push(point);
       else {
         selectObject(point);
-        console.log(point);
       }
     }
   }
   if(pointsToRemove)removeFromSelectionMany(pointsToRemove);
   syncSelectionGroup();
+}
+
+
+export function copySelectedPoints() {
+  copiedPoints = [];
+  selectedObjects.forEach(obj => {
+    if(obj.userData?.type === 'point' && !obj.userData?.locked) copiedPoints.push(obj);
+  });
+  console.log(copiedPoints.length);
+}
+
+export function pasteCopiedPoints() {
+  copiedPoints.forEach(original => {
+      const worldPos = new THREE.Vector3();
+      original.getWorldPosition(worldPos);
+      const savePoint = createSavedPoint(worldPos, 2, 0xff2d00);
+      addPoint(savePoint);
+      sceneRef.add(savePoint);
+      registerAddedObjects([savePoint]);
+      createNewMirroPoint(savePoint);
+  });
 }

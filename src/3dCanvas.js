@@ -16,6 +16,8 @@ import {
     redo,
     setupSelection,
     clearSelection,
+    copySelectedPoints,
+    pasteCopiedPoints
   } from './selection.js';
 
   import {
@@ -37,7 +39,7 @@ let dragStart = new THREE.Vector2();
 let dragEnd = new THREE.Vector2();
 
 const points = [];
-
+let copiedPoints = [];
 
 
 
@@ -219,6 +221,16 @@ window.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'y') {
       redo(scene);
     }
+
+    if (e.ctrlKey || e.metaKey) {
+      if (e.key === 'c') {
+        copySelectedPoints();
+        e.preventDefault();
+      } else if (e.key === 'v') {
+        pasteCopiedPoints();
+        e.preventDefault();
+      }
+    }
   });
 
 
@@ -232,3 +244,12 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();
+
+
+////////////////////////////////////////////////////////
+///////////           functions              ///////////
+////////////////////////////////////////////////////////
+
+export function addPoint(point){
+    points.push(point);
+}

@@ -7,6 +7,7 @@ const mirroredPoints = [];
 const mirrorColour = 0x808080;
 const texture = generateCircleTexture(); // or load a texture file
 
+
 export function createGridAndPlane(scene) {
   sceneRef = scene;
   // Grid helper
@@ -116,6 +117,8 @@ export function createSavedPoint(location, radius, color, data = {}) {
   point.userData.original = data;
   point.userData.locked = false;
   point.userData.mirrored = false;
+  point.userData.color = color;
+  point.userData.radius = radius;
 
   return point;
 }
@@ -202,3 +205,7 @@ export function addMirroredPoint(point) {
   mirroredPoints.push(point);
   sceneRef.add(point);
 }
+
+
+
+

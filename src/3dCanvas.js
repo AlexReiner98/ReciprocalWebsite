@@ -6,6 +6,7 @@ import * as THREE from "three";
 import { setupCameraControls  } from "./cameraControls.js";
 import { setupControlPanel } from './controlPanel.js';
 import * as rg from './rhinoGeometries.js';
+import { lineConnections } from "./lineConnections.js";
 
 import {
     handleClickSelection,
@@ -17,7 +18,8 @@ import {
     setupSelection,
     clearSelection,
     copySelectedPoints,
-    pasteCopiedPoints
+    pasteCopiedPoints,
+    getSelection
   } from './selection.js';
 
   import {
@@ -26,6 +28,7 @@ import {
     isGumballDragging,
     isMouseOverGumball
   } from './gumball.js';
+import { addLineConnection } from "./lineConnections.js";
 
 
 ////////////////////////////////////////////////////////
@@ -39,9 +42,6 @@ let dragStart = new THREE.Vector2();
 let dragEnd = new THREE.Vector2();
 
 const points = [];
-let copiedPoints = [];
-
-
 
 var snapLocation;
 
@@ -67,10 +67,9 @@ document.body.appendChild(renderer.domElement);
 //camera controls setup
 const controls = setupCameraControls(camera, renderer);
 
-
-
 //control panel setup
 let currentMode = 'draw';
+let drawMode = 'points';
 setupControlPanel(
     (newMode) => {
       currentMode = newMode;
@@ -97,7 +96,7 @@ scene.add(snapPoint);
 
 renderer.domElement.addEventListener('mousemove', (e) => {
     snapLocation = rg.getSnappedLocation(e, snapPlane, camera, renderer);
-    snapPoint.visible = (currentMode === 'draw');
+    snapPoint.visible = (currentMode === 'draw' && drawMode !== 'lines');
     rg.updateSnapPoint(snapPoint, snapLocation, scene, currentMode);
 });
 
@@ -191,21 +190,28 @@ window.addEventListener('pointerup', (e) => {
   handleBoxSelection(ndcStart, ndcEnd, camera, scene, append, isGumballDragging());
   } else {
     if (e.target.closest('#control-panel')) return;
-    if(currentMode == 'draw'){
-        const savePoint = rg.createSavedPoint(snapLocation, 2, 0xff2d00);
-        points.push(savePoint);
-        scene.add(savePoint);
-        registerAddedObjects([savePoint]);
-        clearSelection();
-        rg.createNewMirroPoint(savePoint);
-
+    if(currentMode === 'draw' && drawMode === 'points')
+    {
+      const savePoint = rg.createSavedPoint(snapLocation, 2, 0xff2d00);
+      points.push(savePoint);
+      scene.add(savePoint);
+      registerAddedObjects([savePoint]);
+      clearSelection();
+      rg.createNewMirroPoint(savePoint);
     }
-    if (currentMode === 'select') {
-
-        handleClickSelection(e, camera, renderer, scene, append);
+    if (currentMode === 'select' || (currentMode === 'draw' && drawMode === 'lines')) {
+      handleClickSelection(e, camera, renderer, scene, append);
     }
   }
-    
+
+  if(currentMode === 'draw' && drawMode === 'lines')
+  {
+    const selected = getSelection();
+    if(selected.length !== 2)return;
+
+    addLineConnection(scene, selected);
+    clearSelection();
+  }
 });
 
 window.addEventListener('keydown', (e) => {
@@ -240,6 +246,7 @@ window.addEventListener('keydown', (e) => {
 
 // Animate
 function animate() {
+  lineConnections.forEach(conn => conn.update());
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
@@ -252,4 +259,9 @@ animate();
 
 export function addPoint(point){
     points.push(point);
+}
+
+export function setDrawMode(mode)
+{
+  drawMode = mode;
 }

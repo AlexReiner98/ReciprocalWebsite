@@ -1,6 +1,7 @@
 // src/grid.js
 import * as THREE from "three";
 import { isMirrorXActive } from "./controlPanel";
+import { removeLineConnections } from "./lineConnections";
 
 let sceneRef = null;
 const mirroredPoints = [];
@@ -119,6 +120,7 @@ export function createSavedPoint(location, radius, color, data = {}) {
   point.userData.mirrored = false;
   point.userData.color = color;
   point.userData.radius = radius;
+  point.userData.lineConnections = [];
 
   return point;
 }
@@ -136,6 +138,7 @@ export function createNewMirroPoint(point) {
     mirroredPoint.userData.locked = true;
     mirroredPoint.userData.mirrored = true;
     mirroredPoint.userData.source = point;
+    mirroredPoint.userData.lineConnections = [];
     point.userData.mirroredPoint = mirroredPoint;
 
     sceneRef.add(mirroredPoint);
@@ -164,13 +167,17 @@ export function mirrorVisiblePointsAcrossX() {
     point.getWorldPosition(worldPos);
 
     const mirroredPoint = createNewMirroPoint(point);
+    console.log(mirroredPoint);
     sceneRef.add(mirroredPoint);
     mirroredPoints.push(mirroredPoint);
   }
 }
 
 export function removeMirroredPoints() {
-  mirroredPoints.forEach(p => sceneRef.remove(p));
+  mirroredPoints.forEach(p => {
+    sceneRef.remove(p);
+    removeLineConnections(p.userData.lineConnections);
+  });
   mirroredPoints.length = 0;
 }
 

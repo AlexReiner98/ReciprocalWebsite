@@ -15,5 +15,16 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['three', 'three/examples/jsm/controls/TransformControls'],
+  },
+  server: {
+    watch: {
+      usePolling: false, // try true if on WSL or networked drive
+    },
+    fs: {
+      strict: false // allow access outside Vite root
+    },
+    watch: {
+      ignored: ['!**/*.js'] // include all .js files
+    }
   }
 })

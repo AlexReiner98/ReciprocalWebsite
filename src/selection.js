@@ -4,6 +4,7 @@ import {updateGumballTarget,
  } from "./gumball.js";
 import { addMirroredPoint, createSavedPoint, removeMirroredPoint, updateMirroredPoints, createNewMirroPoint } from "./rhinoGeometries.js";
 import { addPoint } from "./3dCanvas.js";
+import { lineConnections, removeLineConnections, tryRebuildLineConnections } from "./lineConnections.js";
 
 let selectedObjects = new Set();
 const selectionGroup = new THREE.Group();
@@ -147,6 +148,9 @@ export function deleteSelected(scene) {
     }
   }
 
+  //remove lineConnections for points
+  toDelete.forEach(obj => removeLineConnections(obj.userData.lineConnections));
+
   const allToDelete = [...toDelete];
   // Look for mirrored points linked to selected objects
   for (const original of toDelete) {
@@ -170,13 +174,18 @@ export function undo(scene) {
 
   switch (action.type) {
     case 'delete':
-      action.objects.forEach(obj => scene.add(obj));
+      action.objects.forEach(obj => 
+        {
+          scene.add(obj)
+          tryRebuildLineConnections(obj);
+        });
       break;
 
     case 'add':
       action.objects.forEach(obj => {
         scene.remove(obj);
         if(obj.userData?.mirroredPoint)removeMirroredPoint(obj.userData.mirroredPoint);
+        if(obj.userData?.lineConnections) removeLineConnections(obj.userData.lineConnections);
         selectedObjects.delete(obj);
       });
       break;
@@ -198,15 +207,19 @@ export function undo(scene) {
 export function redo(scene) {
   const action = redoStack.pop();
   if (!action) return;
-  centroid
   switch (action.type) {
     case 'delete':
-      action.objects.forEach(obj => scene.remove(obj));
+      action.objects.forEach(obj => 
+        {
+          scene.remove(obj)
+          if(obj.userData?.lineConnections) removeLineConnections(obj.userData.lineConnections);
+        });
       break;
 
     case 'add':
       action.objects.forEach(obj => {scene.add(obj)
       if(obj.userData?.mirroredPoint) addMirroredPoint(obj.userData.mirroredPoint);
+      tryRebuildLineConnections(obj);
       });
       break;
     

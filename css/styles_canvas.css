@@ -35,7 +35,7 @@ body {
     background: #eee;
   }
 
-  #gumball-modes {
+  #gumball-modes, #draw-modes {
     display: flex;
     flex-direction: column;
     gap: 4px; /* optional spacing */

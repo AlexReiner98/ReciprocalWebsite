@@ -1,7 +1,6 @@
 import * as THREE from "three";
 
 let sceneRef;
-export const lineConnections = [];
 
 const lineColour = 0xffffff;
 

@@ -73,7 +73,9 @@ export function createSnapPoint(radius, colour, id = null){
   const material = new THREE.PointsMaterial({
     color: colour,
     size: radius,
-    map: texture,
+    alphaMap: texture,
+    transparent: true,      // enable transparency
+    side: THREE.DoubleSide, // if you need both faces
     sizeAttenuation: true
   });
 
@@ -92,16 +94,22 @@ export function createSnapPoint(radius, colour, id = null){
 function generateCircleTexture() {
   const size = 64;
   const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
+  canvas.width = canvas.height = size;
 
   const ctx = canvas.getContext('2d');
+  // clear to fully transparent
+  ctx.clearRect(0, 0, size, size);
+
+  // draw your white circle
   ctx.beginPath();
-  ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+  ctx.arc(size/2, size/2, size/2, 0, Math.PI*2);
   ctx.fillStyle = 'white';
   ctx.fill();
 
   const texture = new THREE.CanvasTexture(canvas);
+  // ensure the alpha channel is used
+  texture.format = THREE.RGBAFormat;
+  texture.needsUpdate = true;
   return texture;
 }
 
@@ -167,7 +175,6 @@ export function mirrorVisiblePointsAcrossX() {
     point.getWorldPosition(worldPos);
 
     const mirroredPoint = createNewMirroPoint(point);
-    console.log(mirroredPoint);
     sceneRef.add(mirroredPoint);
     mirroredPoints.push(mirroredPoint);
   }

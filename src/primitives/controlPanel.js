@@ -5,8 +5,11 @@ import {mirrorVisiblePointsAcrossX,
  } from "./rhinoGeometries.js";
  
  import { setDrawMode } from "./3dCanvas.js";
+import { runSovler } from "../reciprocal/solver.js";
+import { save, loadJSONFile, ReciprocalModel } from "./save.js";
  
  let mirrorXActive = false;
+ export let jsonData;
 
 export function setupControlPanel(onModeChange, onGumballToggle) {
   let currentMode = 'draw';
@@ -125,6 +128,41 @@ export function setupControlPanel(onModeChange, onGumballToggle) {
       }
     });
   });
+
+  const saveButton = document.querySelector("#save");
+  saveButton.addEventListener('mousedown', () =>{
+    saveButton.classList.add('active');
+  });
+  saveButton.addEventListener('mouseup', () =>{
+    saveButton.classList.remove('active');
+    save();
+  });
+  
+  // in your initialization code
+const fileInput = document.getElementById('fileInput');
+fileInput.addEventListener('change', async (e) => {
+  try {
+    jsonData = await loadJSONFile(e.target.files[0]);
+    console.log(jsonData);
+  } catch (err) {
+    console.error(err);
+    alert(err.message);
+  }
+});
+
+// your “Load” button simply does:
+document.getElementById('load')
+  .addEventListener('click', () => fileInput.click());
+
+  const runButton = document.querySelector("#run");
+  runButton.addEventListener('mousedown', () =>{
+    runButton.classList.add('active');
+  });
+  runButton.addEventListener('mouseup', () =>{
+    runButton.classList.remove('active');
+    runSovler();
+  });
+
 
   // Initial state
   setMode(currentMode);

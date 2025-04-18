@@ -34,10 +34,14 @@
                 <button gumball-mode="rotate">Rotate</button>
                 <button gumball-mode="scale">Scale</button>
             </div>
+            <button id="save">Save</button>
+            <input id="fileInput" type="file" accept=".json" style="display: none;">
+            <button id="load" >Load</button>
+            <button id="run">Run</button>
         </div>
 
         <div id="selection-rect"></div>
 
-        <script type="module" src="/src/3dCanvas.js"></script>
+        <script type="module" src="/src/primitives/3dCanvas.js"></script>
     </body>
 </html>

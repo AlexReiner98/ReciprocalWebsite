@@ -41,7 +41,7 @@ let isDraggingGumball = false;
 let dragStart = new THREE.Vector2();
 let dragEnd = new THREE.Vector2();
 
-const points = [];
+export const points = [];
 
 var snapLocation;
 

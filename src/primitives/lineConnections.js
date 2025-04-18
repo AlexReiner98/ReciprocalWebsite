@@ -38,8 +38,6 @@ export class LineConnection {
 
 export function addLineConnection (scene, selected) {
     if(!sceneRef) sceneRef = scene;
-
-    console.log("lineConnection count: " + lineConnections.length);
     const [p1, p2] = Array.from(selected);
 
     if(checkLineExists([p1,p2]))return;

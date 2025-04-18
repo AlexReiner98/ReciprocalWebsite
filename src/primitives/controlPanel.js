@@ -6,7 +6,7 @@ import {mirrorVisiblePointsAcrossX,
  
  import { setDrawMode } from "./3dCanvas.js";
 import { runSovler } from "../reciprocal/solver.js";
-import { save, loadJSONFile, ReciprocalModel } from "./save.js";
+import { save, loadJSONFile, ReciprocalModel } from "./dataModel.js";
  
  let mirrorXActive = false;
  export let jsonData;
